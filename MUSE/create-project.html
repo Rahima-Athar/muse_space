@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Project — MUSE</title>
+  <meta name="description" content="Share your creative project with the MUSE community." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="create-project-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container section-sm">
+      <div class="create-project-layout">
+        <!-- Form Header -->
+        <div class="page-header-simple">
+          <span class="badge badge-sage">Creator Studio</span>
+          <h1 id="pageTitle" class="page-title">Publish a New Creation</h1>
+          <p class="page-subtitle">Present your concept, showcase high-res media, and invite feedback from fellow creators.</p>
+        </div>
+
+        <form id="projectForm" class="project-form-grid" novalidate>
+          <!-- Left Column: Main Metadata -->
+          <div class="form-main-col card">
+            <div class="form-group">
+              <label for="title" class="form-label">Project Title <span class="required">*</span></label>
+              <input type="text" id="title" name="title" class="form-input" placeholder="e.g. Kinetic Typography & Identity" required />
+            </div>
+
+            <div class="form-group">
+              <label for="category" class="form-label">Primary Category <span class="required">*</span></label>
+              <select id="category" name="category" class="form-select" required>
+                <option value="">Select a category...</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="UI/UX">UI/UX Design</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Photography">Photography</option>
+                <option value="Illustration">Illustration</option>
+                <option value="Digital Art">Digital Art</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="description" class="form-label">Project Description & Process</label>
+              <textarea id="description" name="description" rows="8" class="form-textarea" placeholder="Tell the story behind your creation. What was your inspiration, design decisions, challenges, and outcomes?"></textarea>
+              <small class="form-help">Markdown formatting is supported.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="tools" class="form-label">Tools & Stack Used</label>
+              <input type="text" id="tools" name="tools" class="form-input" placeholder="e.g. Figma, Three.js, Blender, Glyphs (comma separated)" />
+            </div>
+
+            <div class="form-group">
+              <label for="externalUrl" class="form-label">Live Link / Repository (Optional)</label>
+              <input type="url" id="externalUrl" name="externalUrl" class="form-input" placeholder="https://myproject.com or https://github.com/..." />
+            </div>
+          </div>
+
+          <!-- Right Column: Media Upload & Actions -->
+          <div class="form-side-col">
+            <!-- Cover Image Upload Card -->
+            <div class="card media-upload-card">
+              <h3 class="card-subtitle">Project Cover Image <span class="required">*</span></h3>
+              <p class="card-subtext">Recommended aspect ratio 16:9 or 4:3, high resolution JPG, PNG, or WebP.</p>
+
+              <!-- Drag & Drop Zone -->
+              <div id="dropZone" class="media-drop-zone">
+                <input type="file" id="coverFileInput" accept="image/*" class="sr-only" />
+                <div class="drop-zone-idle" id="dropIdle">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="drop-icon">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <p class="drop-text">Drag image here or <button type="button" class="btn-text-link" id="browseBtn">browse file</button></p>
+                  <span class="drop-hint">Max file size: 5MB</span>
+                </div>
+                <!-- Image Preview -->
+                <div class="drop-zone-preview" id="dropPreview" style="display:none;">
+                  <img id="previewImg" src="" alt="Cover preview" class="preview-img" />
+                  <button type="button" id="removeCoverBtn" class="btn-remove-media" aria-label="Remove image">&times;</button>
+                </div>
+              </div>
+
+              <!-- Fallback Image URL input -->
+              <div class="form-group mt-3">
+                <label for="coverUrlInput" class="form-label-sm">Or paste public image URL:</label>
+                <input type="url" id="coverUrlInput" class="form-input form-input-sm" placeholder="https://images.unsplash.com/..." />
+              </div>
+            </div>
+
+            <!-- Publishing Action Card -->
+            <div class="card publish-actions-card">
+              <h3 class="card-subtitle">Publishing Status</h3>
+              <p class="card-subtext">Published projects appear in public search and community feeds. Drafts remain visible only to you in your portfolio.</p>
+
+              <div class="publish-buttons">
+                <button type="button" id="saveDraftBtn" class="btn btn-outline btn-block">
+                  Save as Draft
+                </button>
+                <button type="submit" id="publishBtn" class="btn btn-primary btn-block btn-lg">
+                  Publish to MUSE
+                </button>
+              </div>
+
+              <a href="portfolio.html" class="btn-cancel-link">Cancel and return to portfolio</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { requireAuth, getCurrentUser } from './js/auth.js';
+    import { createProject, updateProject, getProjectById, uploadProjectMedia } from './js/projects.js';
+    import { showToast, validateRequired, showFieldError, clearFieldError } from './js/common.js';
+
+    // Must be logged in to access create page
+    const userRes = await requireAuth('login.html');
+    const currentUser = userRes?.user;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+
+    const form = document.getElementById('projectForm');
+    const titleInput = document.getElementById('title');
+    const categoryInput = document.getElementById('category');
+    const descInput = document.getElementById('description');
+    const toolsInput = document.getElementById('tools');
+    const externalUrlInput = document.getElementById('externalUrl');
+    const coverUrlInput = document.getElementById('coverUrlInput');
+    const fileInput = document.getElementById('coverFileInput');
+    const dropZone = document.getElementById('dropZone');
+    const dropIdle = document.getElementById('dropIdle');
+    const dropPreview = document.getElementById('dropPreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeCoverBtn = document.getElementById('removeCoverBtn');
+    const browseBtn = document.getElementById('browseBtn');
+    const publishBtn = document.getElementById('publishBtn');
+    const saveDraftBtn = document.getElementById('saveDraftBtn');
+
+    let selectedFile = null;
+    let existingCoverUrl = null;
+
+    // Load existing project if editing
+    if (editId) {
+      document.getElementById('pageTitle').textContent = 'Edit Project';
+      publishBtn.textContent = 'Save Changes';
+
+      const { data: project } = await getProjectById(editId);
+      if (project) {
+        if (project.user_id !== currentUser.id) {
+          showToast('You do not have permission to edit this project.', 'error');
+          setTimeout(() => window.location.href = 'portfolio.html', 1500);
+        } else {
+          titleInput.value = project.title || '';
+          categoryInput.value = project.category || '';
+          descInput.value = project.description || '';
+          toolsInput.value = project.tools || '';
+          externalUrlInput.value = project.external_url || '';
+          if (project.cover_image) {
+            existingCoverUrl = project.cover_image;
+            showPreview(project.cover_image);
+          }
+        }
+      }
+    }
+
+    // File selection UI
+    browseBtn.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', (e) => {
+      if (e.target !== removeCoverBtn && !dropPreview.contains(e.target)) {
+        fileInput.click();
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files && fileInput.files[0]) {
+        handleFile(fileInput.files[0]);
+      }
+    });
+
+    coverUrlInput.addEventListener('input', () => {
+      const url = coverUrlInput.value.trim();
+      if (url) {
+        showPreview(url);
+        selectedFile = null;
+      }
+    });
+
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid image file.', 'error');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('Image size exceeds 5MB limit.', 'error');
+        return;
+      }
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => showPreview(e.target.result);
+      reader.readAsDataURL(file);
+    }
+
+    function showPreview(src) {
+      previewImg.src = src;
+      dropIdle.style.display = 'none';
+      dropPreview.style.display = 'block';
+    }
+
+    removeCoverBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedFile = null;
+      existingCoverUrl = null;
+      fileInput.value = '';
+      coverUrlInput.value = '';
+      previewImg.src = '';
+      dropPreview.style.display = 'none';
+      dropIdle.style.display = 'flex';
+    });
+
+    // Drag & Drop
+    ['dragenter', 'dragover'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+      });
+    });
+    ['dragleave', 'drop'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+      });
+    });
+    dropZone.addEventListener('drop', (e) => {
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    async function handleSave(status) {
+      clearFieldError(titleInput);
+      clearFieldError(categoryInput);
+
+      const title = titleInput.value.trim();
+      const category = categoryInput.value;
+      const description = descInput.value.trim();
+      const tools = toolsInput.value.trim();
+      const external_url = externalUrlInput.value.trim();
+
+      let isValid = true;
+      const titleVal = validateRequired(title, 'Title');
+      if (!titleVal.valid) {
+        showFieldError(titleInput, titleVal.message);
+        isValid = false;
+      }
+
+      if (!category) {
+        showFieldError(categoryInput, 'Please select a category.');
+        isValid = false;
+      }
+
+      let cover_image = existingCoverUrl || coverUrlInput.value.trim() || null;
+
+      if (!cover_image && !selectedFile && status === 'published') {
+        showToast('Please provide a cover image for your project.', 'warning');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      const activeBtn = status === 'published' ? publishBtn : saveDraftBtn;
+      activeBtn.disabled = true;
+      const originalText = activeBtn.textContent;
+      activeBtn.textContent = 'Saving...';
+
+      try {
+        // Upload image to Supabase Storage if file was chosen
+        if (selectedFile) {
+          const { url, error: uploadErr } = await uploadProjectMedia(selectedFile, currentUser.id);
+          if (uploadErr) {
+            console.warn('Storage upload error, using local fallback:', uploadErr);
+          } else if (url) {
+            cover_image = url;
+          }
+        }
+
+        // Fallback default image if none provided
+        if (!cover_image) {
+          cover_image = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000&auto=format&fit=crop&q=80';
+        }
+
+        const projectPayload = {
+          title,
+          category,
+          description,
+          tools,
+          external_url: external_url || null,
+          cover_image,
+          status
+        };
+
+        if (editId) {
+          const { data, error } = await updateProject(editId, projectPayload);
+          if (error) throw error;
+          showToast('Project updated successfully!', 'success');
+          setTimeout(() => window.location.href = `project-details.html?id=${editId}`, 1000);
+        } else {
+          const { data, error } = await createProject(projectPayload);
+          if (error) throw error;
+          showToast(status === 'published' ? 'Project published!' : 'Draft saved!', 'success');
+          setTimeout(() => window.location.href = 'portfolio.html', 1000);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || 'Error saving project.', 'error');
+        activeBtn.disabled = false;
+        activeBtn.textContent = originalText;
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleSave('published');
+    });
+
+    saveDraftBtn.addEventListener('click', () => {
+      handleSave('draft');
+    });
+  </script>
+</body>
+</html>

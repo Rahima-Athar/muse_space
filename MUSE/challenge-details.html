@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Challenge Details — MUSE</title>
+  <meta name="description" content="View creative challenge brief, guidelines, deadlines, and submissions on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="challenge-details-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container section-sm">
+      <!-- Loading State -->
+      <div id="challengeLoading" class="loading-state">
+        <div class="spinner-ring"></div>
+        <p>Loading challenge brief...</p>
+      </div>
+
+      <!-- Challenge Content Layout -->
+      <div id="challengeContent" class="challenge-details-layout" style="display:none;">
+        <!-- Left: Brief, Rules, Submissions -->
+        <div class="challenge-main-col">
+          <div class="challenge-header-block card">
+            <div class="challenge-banner-wrap">
+              <img id="challengeCoverImg" src="" alt="Challenge Cover" class="challenge-cover-full" />
+            </div>
+            <div class="challenge-meta-header">
+              <div class="badge-row">
+                <span id="challengeStatusBadge" class="badge badge-sage">Active Prompt</span>
+                <span id="challengeCategoryBadge" class="badge badge-category">Graphic Design</span>
+              </div>
+              <h1 id="challengeTitle" class="challenge-view-title">Challenge Title</h1>
+              <p id="challengeDates" class="challenge-dates-row">
+                <strong>Submission Window:</strong> <span id="challengeDeadline">Nov 20, 2026</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Creative Brief Card -->
+          <div class="card challenge-brief-card">
+            <h2 class="section-title-sm">The Creative Brief</h2>
+            <div id="challengeDescription" class="rich-text-content"></div>
+
+            <h3 class="rules-heading">Submission Rules & Criteria</h3>
+            <ul class="rules-list">
+              <li>Must be original work created or refined during the challenge window.</li>
+              <li>Include your process notes, tools used, and inspiration references.</li>
+              <li>Community voting and editorial curation will decide the featured studio spotlight.</li>
+            </ul>
+          </div>
+
+          <!-- Participant Submissions Section -->
+          <section class="section-sm">
+            <h2 class="section-title-sm">Community Entries (<span id="submissionsCount">0</span>)</h2>
+            <div class="projects-grid" id="challengeSubmissionsGrid">
+              <!-- Submitted projects render here -->
+            </div>
+            <div id="noSubmissionsState" class="empty-state" style="display:none;">
+              <p class="text-muted">No entries submitted yet. Be the first to enter this challenge!</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right: Submission Widget Sticky Card -->
+        <aside class="challenge-side-col">
+          <div class="card submit-widget-card">
+            <h3 class="widget-title">Submit Your Work</h3>
+            <p class="widget-desc">Select an existing project from your MUSE portfolio to enter into this challenge.</p>
+
+            <div id="guestSubmitNotice" style="display:none;">
+              <p class="text-muted mb-3">Sign in or register to submit a project entry.</p>
+              <a href="login.html" class="btn btn-primary btn-block">Sign In to Enter</a>
+            </div>
+
+            <form id="submissionForm" style="display:none;">
+              <div class="form-group">
+                <label for="projectSelect" class="form-label">Select Project from Your Portfolio</label>
+                <select id="projectSelect" class="form-select" required>
+                  <option value="">Choose a project...</option>
+                </select>
+                <small class="form-help">Only your published projects can be entered.</small>
+              </div>
+
+              <div class="form-group">
+                <label for="entryNotes" class="form-label">Artist Notes on the Prompt</label>
+                <textarea id="entryNotes" rows="3" class="form-textarea" placeholder="How did you interpret this prompt?"></textarea>
+              </div>
+
+              <button type="submit" id="submitEntryBtn" class="btn btn-primary btn-block">Submit Entry</button>
+            </form>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { getChallengeById, submitToChallenge } from './js/challenges.js';
+    import { getUserProjects } from './js/projects.js';
+    import { getCurrentUser } from './js/auth.js';
+    import { showToast, formatDate } from './js/common.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const challengeId = urlParams.get('id') || 'challenge-earth-form';
+
+    let currentChallenge = null;
+    let currentUser = null;
+
+    async function init() {
+      const loading = document.getElementById('challengeLoading');
+      const content = document.getElementById('challengeContent');
+
+      try {
+        const userRes = await getCurrentUser();
+        currentUser = userRes.data?.user || null;
+      } catch (e) {
+        currentUser = null;
+      }
+
+      try {
+        // Attempt to load from Supabase or fallback
+        const { data } = await getChallengeById(challengeId);
+        currentChallenge = data || getFallbackChallenge(challengeId);
+      } catch (e) {
+        currentChallenge = getFallbackChallenge(challengeId);
+      }
+
+      loading.style.display = 'none';
+      renderChallenge(currentChallenge);
+      setupSubmissionForm().catch((err) => {
+        console.error('[challenge-details] Submission form failed:', err);
+      });
+    }
+
+    function renderChallenge(c) {
+      document.title = `${c.title} — MUSE Challenge`;
+      document.getElementById('challengeTitle').textContent = c.title;
+      document.getElementById('challengeCategoryBadge').textContent = c.category || 'Creative';
+      document.getElementById('challengeDeadline').textContent = formatDate(c.deadline);
+      document.getElementById('challengeCoverImg').src = c.cover_image || 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=1200&auto=format&fit=crop&q=80';
+      document.getElementById('challengeDescription').innerHTML = `<p>${c.description}</p>`;
+
+      const submissions = c.challenge_submissions || [];
+      document.getElementById('submissionsCount').textContent = submissions.length;
+
+      const grid = document.getElementById('challengeSubmissionsGrid');
+      const empty = document.getElementById('noSubmissionsState');
+
+      if (submissions.length > 0) {
+        grid.innerHTML = submissions.map(sub => {
+          const p = sub.projects || {};
+          const author = sub.profiles || {};
+          return `
+            <article class="project-card">
+              <div class="project-card-media">
+                <a href="project-details.html?id=${sub.project_id}">
+                  <img src="${p.cover_image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80'}" alt="${p.title || 'Entry'}" class="project-card-img" />
+                </a>
+                <span class="badge badge-category">Entry</span>
+              </div>
+              <div class="project-card-body">
+                <h3 class="project-card-title"><a href="project-details.html?id=${sub.project_id}">${p.title || 'Challenge Submission'}</a></h3>
+                <div class="project-card-footer">
+                  <div class="project-creator-link">
+                    <img src="${author.avatar_url || 'assets/images/default-avatar.svg'}" alt="Avatar" class="project-creator-avatar" />
+                    <span class="project-creator-name">${author.full_name || 'Creator'}</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      } else {
+        empty.style.display = 'block';
+      }
+
+      document.getElementById('challengeContent').style.display = 'grid';
+    }
+
+    async function setupSubmissionForm() {
+      const guestNotice = document.getElementById('guestSubmitNotice');
+      const form = document.getElementById('submissionForm');
+      const select = document.getElementById('projectSelect');
+
+      if (!currentUser) {
+        guestNotice.style.display = 'block';
+        return;
+      }
+
+      form.style.display = 'block';
+
+      // Load user's published projects into dropdown
+      const { data: userProjects } = await getUserProjects(currentUser.id, 'published');
+      if (userProjects && userProjects.length > 0) {
+        userProjects.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = p.title;
+          select.appendChild(opt);
+        });
+      } else {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'No published projects found — create one first!';
+        opt.disabled = true;
+        select.appendChild(opt);
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const projectId = select.value;
+        const notes = document.getElementById('entryNotes').value.trim();
+
+        if (!projectId) {
+          showToast('Please select a project to submit.', 'error');
+          return;
+        }
+
+        const btn = document.getElementById('submitEntryBtn');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        const { data, error } = await submitToChallenge(currentChallenge.id, projectId, notes);
+        btn.disabled = false;
+        btn.textContent = 'Submit Entry';
+
+        if (error) {
+          showToast(error.message || 'Error submitting entry.', 'error');
+        } else {
+          showToast('Entry submitted successfully! Good luck!', 'success');
+          form.reset();
+        }
+      });
+    }
+
+    function getFallbackChallenge(id) {
+      return {
+        id,
+        title: 'Earth & Form: Organic Tactility',
+        description: 'Explore organic textures, warm palettes, and tactile shapes. Create a piece celebrating raw ceramics, unbleached linen, and terracotta tones.',
+        category: 'Graphic Design',
+        status: 'active',
+        deadline: '2026-11-20',
+        cover_image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=1200&auto=format&fit=crop&q=80',
+        challenge_submissions: []
+      };
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>

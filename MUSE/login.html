@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — MUSE</title>
+  <meta name="description" content="Sign in to your MUSE creator account." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <a href="index.html" class="auth-logo" aria-label="MUSE Home">
+        <span class="logo-mark">M</span>
+        <span class="logo-text">MUSE</span>
+      </a>
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to your creative studio & connect with the community.</p>
+    </div>
+
+    <!-- Error/Notice box -->
+    <div id="authAlert" class="auth-alert" style="display:none;" role="alert"></div>
+
+    <form id="loginForm" class="auth-form" novalidate>
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" id="email" name="email" class="form-input" placeholder="maya@example.com" required autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <div class="label-with-action">
+          <label for="password" class="form-label">Password</label>
+          <a href="#" id="forgotPasswordLink" class="link-inline-sm">Forgot password?</a>
+        </div>
+        <div class="input-toggle-wrap">
+          <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password" />
+          <button type="button" class="btn-toggle-pwd" id="togglePassword" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg">
+        <span class="btn-text">Sign In</span>
+      </button>
+    </form>
+
+    <!-- Forgot Password Modal/Drawer -->
+    <div id="resetModal" class="modal-backdrop" style="display:none;">
+      <div class="modal-content auth-card-inner">
+        <h3 class="modal-title">Reset your password</h3>
+        <p class="modal-desc">Enter your email and we'll send you instructions to reset your account password.</p>
+        <div class="form-group">
+          <label for="resetEmail" class="form-label">Email</label>
+          <input type="email" id="resetEmail" class="form-input" placeholder="your@email.com" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="closeResetModal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="sendResetBtn">Send Reset Link</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-footer">
+      <p>Don't have an account yet? <a href="signup.html" class="auth-link">Create your space</a></p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { signIn, resetPassword, redirectIfAuthenticated } from './js/auth.js';
+    import { showToast, validateEmail, validateRequired, showFieldError, clearFieldError } from './js/common.js';
+
+    // If already logged in, redirect to feed
+    await redirectIfAuthenticated('feed.html');
+
+    const form = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const authAlert = document.getElementById('authAlert');
+    const togglePwd = document.getElementById('togglePassword');
+    const pwdInput = document.getElementById('password');
+
+    // Toggle password visibility
+    togglePwd?.addEventListener('click', () => {
+      const type = pwdInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      pwdInput.setAttribute('type', type);
+    });
+
+    // Forgot password flow
+    const forgotLink = document.getElementById('forgotPasswordLink');
+    const resetModal = document.getElementById('resetModal');
+    const closeReset = document.getElementById('closeResetModal');
+    const sendReset = document.getElementById('sendResetBtn');
+    const resetEmailInput = document.getElementById('resetEmail');
+
+    forgotLink?.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetModal.style.display = 'flex';
+      resetEmailInput.value = document.getElementById('email').value;
+    });
+
+    closeReset?.addEventListener('click', () => {
+      resetModal.style.display = 'none';
+    });
+
+    sendReset?.addEventListener('click', async () => {
+      const email = resetEmailInput.value.trim();
+      const val = validateEmail(email);
+      if (!val.valid) {
+        showToast(val.message, 'error');
+        return;
+      }
+      sendReset.disabled = true;
+      sendReset.textContent = 'Sending...';
+      const { error } = await resetPassword(email);
+      sendReset.disabled = false;
+      sendReset.textContent = 'Send Reset Link';
+      if (error) {
+        showToast(error.message || 'Could not send reset link', 'error');
+      } else {
+        showToast('Password reset link sent to your email!', 'success');
+        resetModal.style.display = 'none';
+      }
+    });
+
+    // Login submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authAlert.style.display = 'none';
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      [document.getElementById('email'), document.getElementById('password')].forEach(clearFieldError);
+
+      let isValid = true;
+      const emailVal = validateEmail(email);
+      if (!emailVal.valid) {
+        showFieldError(document.getElementById('email'), emailVal.message);
+        isValid = false;
+      }
+
+      const passVal = validateRequired(password, 'Password');
+      if (!passVal.valid) {
+        showFieldError(document.getElementById('password'), passVal.message);
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('btn-loading');
+      submitBtn.querySelector('.btn-text').textContent = 'Signing in...';
+
+      const { data, error } = await signIn(email, password);
+
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('btn-loading');
+      submitBtn.querySelector('.btn-text').textContent = 'Sign In';
+
+      if (error) {
+        authAlert.textContent = error.message || 'Invalid email or password.';
+        authAlert.className = 'auth-alert auth-alert-error';
+        authAlert.style.display = 'block';
+      } else {
+        showToast('Signed in successfully!', 'success');
+        window.location.href = 'feed.html';
+      }
+    });
+  </script>
+</body>
+</html>

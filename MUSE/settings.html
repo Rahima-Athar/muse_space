@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — MUSE</title>
+  <meta name="description" content="Manage your account preferences, security, and privacy on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="settings-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container section-sm">
+      <div class="settings-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="settings-sidebar">
+          <div class="card settings-nav-card">
+            <h2 class="settings-nav-title">Settings</h2>
+            <ul class="settings-nav-list">
+              <li><a href="#account" class="settings-nav-item active">Account</a></li>
+              <li><a href="#security" class="settings-nav-item">Security & Password</a></li>
+              <li><a href="#privacy" class="settings-nav-item">Privacy</a></li>
+              <li><a href="#notifications" class="settings-nav-item">Notifications</a></li>
+              <li class="mt-4"><button id="settingsSignOutBtn" class="btn-text-danger">Sign Out</button></li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Main Settings Panels -->
+        <div class="settings-main-panels">
+          <!-- Account Section -->
+          <section id="account" class="card settings-panel">
+            <h2 class="panel-title">Account Details</h2>
+            <p class="panel-desc">Your basic account credentials and identifier.</p>
+
+            <div class="form-group">
+              <label for="settingsEmail" class="form-label">Email Address</label>
+              <input type="email" id="settingsEmail" class="form-input" disabled />
+              <small class="form-help">Linked to your local MUSE account.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="settingsUsername" class="form-label">Username</label>
+              <input type="text" id="settingsUsername" class="form-input" disabled />
+              <small class="form-help">Your public portfolio handle is <span id="handlePreview">@username</span>.</small>
+            </div>
+
+            <div class="mt-3">
+              <a href="edit-profile.html" class="btn btn-outline btn-sm">Edit Profile Details &rarr;</a>
+            </div>
+          </section>
+
+          <!-- Security Section -->
+          <section id="security" class="card settings-panel">
+            <h2 class="panel-title">Security & Password</h2>
+            <p class="panel-desc">Update your account password to keep your space secure.</p>
+
+            <form id="passwordForm">
+              <div class="form-group">
+                <label for="newPassword" class="form-label">New Password</label>
+                <input type="password" id="newPassword" class="form-input" placeholder="At least 6 characters" required autocomplete="new-password" />
+              </div>
+
+              <div class="form-group">
+                <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                <input type="password" id="confirmNewPassword" class="form-input" placeholder="Re-enter password" required autocomplete="new-password" />
+              </div>
+
+              <button type="submit" id="updatePasswordBtn" class="btn btn-primary btn-sm">Update Password</button>
+            </form>
+          </section>
+
+          <!-- Privacy Section -->
+          <section id="privacy" class="card settings-panel">
+            <h2 class="panel-title">Privacy Options</h2>
+            <p class="panel-desc">Control who can discover your work and activity.</p>
+
+            <div class="setting-row">
+              <div>
+                <h4 class="setting-label">Public Portfolio Visibility</h4>
+                <p class="setting-help">Allow your published projects to appear in community discovery and explore searches.</p>
+              </div>
+              <input type="checkbox" id="publicPortfolioToggle" checked class="form-toggle" />
+            </div>
+
+            <div class="setting-row mt-3">
+              <div>
+                <h4 class="setting-label">Activity Status</h4>
+                <p class="setting-help">Show when you are actively collaborating or participating in challenges.</p>
+              </div>
+              <input type="checkbox" id="activityStatusToggle" checked class="form-toggle" />
+            </div>
+          </section>
+
+          <!-- Notifications Section -->
+          <section id="notifications" class="card settings-panel">
+            <h2 class="panel-title">Notification Preferences</h2>
+            <p class="panel-desc">Choose which community events send you alerts.</p>
+
+            <div class="setting-row">
+              <div>
+                <h4 class="setting-label">Project Appreciations</h4>
+                <p class="setting-help">Notify me when someone likes my work.</p>
+              </div>
+              <input type="checkbox" id="notifyLikesToggle" checked class="form-toggle" />
+            </div>
+
+            <div class="setting-row mt-3">
+              <div>
+                <h4 class="setting-label">Comments & Feedback</h4>
+                <p class="setting-help">Notify me when someone comments on my projects.</p>
+              </div>
+              <input type="checkbox" id="notifyCommentsToggle" checked class="form-toggle" />
+            </div>
+
+            <div class="setting-row mt-3">
+              <div>
+                <h4 class="setting-label">New Followers</h4>
+                <p class="setting-help">Notify me when another creator follows my portfolio.</p>
+              </div>
+              <input type="checkbox" id="notifyFollowsToggle" checked class="form-toggle" />
+            </div>
+          </section>
+
+          <!-- Danger Zone -->
+          <section class="card settings-panel panel-danger">
+            <h2 class="panel-title text-danger">Sign Out & Session</h2>
+            <p class="panel-desc">End your active session on this device.</p>
+            <button type="button" id="logoutCardBtn" class="btn btn-danger btn-sm">Log Out of MUSE</button>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { requireAuth, signOut, getCurrentProfile } from './js/auth.js';
+    import { showToast, confirmDialog, validatePassword } from './js/common.js';
+
+    let user = null;
+
+    async function init() {
+      try {
+        const userRes = await requireAuth('login.html');
+        user = userRes?.user || null;
+      } catch (e) {
+        user = null;
+      }
+
+      if (user) {
+        document.getElementById('settingsEmail').value = user.email || '';
+        const { data: profile } = await getCurrentProfile();
+        if (profile) {
+          document.getElementById('settingsUsername').value = profile.username || '';
+          document.getElementById('handlePreview').textContent = `@${profile.username || 'username'}`;
+        }
+      }
+
+      // Password update
+      document.getElementById('passwordForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pwd = document.getElementById('newPassword').value;
+        const confirm = document.getElementById('confirmNewPassword').value;
+
+        const val = validatePassword(pwd);
+        if (!val.valid) {
+          showToast(val.message, 'error');
+          return;
+        }
+
+        if (pwd !== confirm) {
+          showToast('Passwords do not match.', 'error');
+          return;
+        }
+
+        const btn = document.getElementById('updatePasswordBtn');
+        btn.disabled = true;
+        btn.textContent = 'Updating...';
+
+        btn.disabled = false;
+        btn.textContent = 'Update Password';
+        showToast('Demo mode: password change is disabled.', 'info');
+        document.getElementById('passwordForm').reset();
+      });
+
+      // Sign out buttons
+      const handleSignOut = async () => {
+        const ok = await confirmDialog('Are you sure you want to sign out?', {
+          confirmText: 'Sign Out',
+          variant: 'danger'
+        });
+        if (ok) {
+          await signOut();
+          window.location.href = 'login.html';
+        }
+      };
+
+      document.getElementById('settingsSignOutBtn')?.addEventListener('click', handleSignOut);
+      document.getElementById('logoutCardBtn')?.addEventListener('click', handleSignOut);
+
+      // Save preference mock triggers
+      ['publicPortfolioToggle', 'activityStatusToggle', 'notifyLikesToggle', 'notifyCommentsToggle', 'notifyFollowsToggle'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', () => {
+          showToast('Preferences updated', 'info');
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

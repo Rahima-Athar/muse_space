@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio — MUSE</title>
+  <meta name="description" content="Manage and view your published creations and drafts on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="portfolio-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container section-sm">
+      <!-- Portfolio Hero / Header -->
+      <header class="portfolio-header card">
+        <div class="portfolio-header-inner">
+          <img id="portfolioAvatar" src="assets/images/default-avatar.svg" alt="Profile Avatar" class="portfolio-avatar" />
+          <div class="portfolio-meta">
+            <h1 id="portfolioName" class="portfolio-name">Creator Name</h1>
+            <p id="portfolioUsername" class="portfolio-handle">@username</p>
+            <p id="portfolioBio" class="portfolio-bio">Creative mind sharing work on MUSE.</p>
+            
+            <div class="portfolio-stats-bar">
+              <div class="portfolio-stat">
+                <strong id="statPublishedCount">0</strong>
+                <span>Published</span>
+              </div>
+              <div class="portfolio-stat">
+                <strong id="statDraftCount">0</strong>
+                <span>Drafts</span>
+              </div>
+              <div class="portfolio-stat">
+                <strong id="statFollowersCount">0</strong>
+                <span>Followers</span>
+              </div>
+            </div>
+          </div>
+          <div class="portfolio-header-actions">
+            <a href="create-project.html" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
+                <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              New Project
+            </a>
+            <a href="edit-profile.html" class="btn btn-outline">Edit Profile</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Tabs (Published, Drafts, All) -->
+      <div class="portfolio-tabs-bar">
+        <div class="portfolio-tabs">
+          <button class="portfolio-tab active" data-tab="all">All Projects (<span id="tabCountAll">0</span>)</button>
+          <button class="portfolio-tab" data-tab="published">Published (<span id="tabCountPublished">0</span>)</button>
+          <button class="portfolio-tab" data-tab="draft">Drafts (<span id="tabCountDraft">0</span>)</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="portfolioLoading" class="loading-state">
+        <div class="spinner-ring"></div>
+        <p>Loading your portfolio...</p>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="projects-grid" id="portfolioProjectsGrid" style="display:none;"></div>
+
+      <!-- Empty State -->
+      <div id="portfolioEmptyState" class="empty-state" style="display:none;">
+        <div class="empty-icon">🎨</div>
+        <h3 class="empty-title">Your portfolio is awaiting creations</h3>
+        <p class="empty-desc">Share your projects, case studies, or early drafts with the MUSE creative community.</p>
+        <a href="create-project.html" class="btn btn-primary btn-lg">Publish Your First Project</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { requireAuth, getCurrentProfile } from './js/auth.js';
+    import { getUserProjects, deleteProject } from './js/projects.js';
+    import { getFollowCounts } from './js/interactions.js';
+    import { showToast, confirmDialog, escapeHtml } from './js/common.js';
+
+    let allProjects = [];
+    let activeTab = 'all';
+
+    async function init() {
+      const userRes = await requireAuth('login.html');
+      if (!userRes?.user) return;
+      const user = userRes.user;
+
+      // Fetch profile data
+      const { data: profile } = await getCurrentProfile();
+      if (profile) {
+        document.getElementById('portfolioName').textContent = profile.full_name || 'Creator';
+        document.getElementById('portfolioUsername').textContent = `@${profile.username || 'username'}`;
+        document.getElementById('portfolioBio').textContent = profile.bio || 'Welcome to my creative space on MUSE.';
+        if (profile.avatar_url) {
+          document.getElementById('portfolioAvatar').src = profile.avatar_url;
+        }
+      }
+
+      // Fetch followers count
+      const followCounts = await getFollowCounts(user.id);
+      document.getElementById('statFollowersCount').textContent = followCounts.followers;
+
+      // Fetch user's projects
+      const { data: projects, error } = await getUserProjects(user.id, 'all');
+      document.getElementById('portfolioLoading').style.display = 'none';
+
+      allProjects = projects || [];
+      updateCounts();
+      renderCurrentTab();
+    }
+
+    function updateCounts() {
+      const published = allProjects.filter(p => p.status === 'published');
+      const drafts = allProjects.filter(p => p.status === 'draft');
+
+      document.getElementById('statPublishedCount').textContent = published.length;
+      document.getElementById('statDraftCount').textContent = drafts.length;
+
+      document.getElementById('tabCountAll').textContent = allProjects.length;
+      document.getElementById('tabCountPublished').textContent = published.length;
+      document.getElementById('tabCountDraft').textContent = drafts.length;
+    }
+
+    function renderCurrentTab() {
+      const grid = document.getElementById('portfolioProjectsGrid');
+      const empty = document.getElementById('portfolioEmptyState');
+
+      let filtered = allProjects;
+      if (activeTab === 'published') filtered = allProjects.filter(p => p.status === 'published');
+      if (activeTab === 'draft') filtered = allProjects.filter(p => p.status === 'draft');
+
+      if (filtered.length === 0) {
+        grid.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.style.display = 'grid';
+
+      grid.innerHTML = filtered.map(p => {
+        const cover = p.cover_image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80';
+        const isDraft = p.status === 'draft';
+        const likesCount = p.likes ? p.likes.length : 0;
+        const commentsCount = p.comments ? p.comments.length : 0;
+
+        return `
+          <article class="project-card ${isDraft ? 'project-card-draft' : ''}">
+            <div class="project-card-media">
+              <a href="project-details.html?id=${p.id}">
+                <img src="${cover}" alt="${p.title}" class="project-card-img" />
+              </a>
+              ${isDraft ? `<span class="badge badge-terracotta project-draft-badge">Draft</span>` : ''}
+              ${p.category ? `<span class="badge badge-category">${p.category}</span>` : ''}
+            </div>
+
+            <div class="project-card-body">
+              <h3 class="project-card-title">
+                <a href="project-details.html?id=${p.id}">${p.title}</a>
+              </h3>
+
+              <div class="portfolio-card-manage">
+                <div class="project-card-stats">
+                  <span class="stat-item">♥ ${likesCount}</span>
+                  <span class="stat-item">💬 ${commentsCount}</span>
+                </div>
+                <div class="manage-actions">
+                  <a href="create-project.html?edit=${p.id}" class="btn btn-outline btn-xs">Edit</a>
+                  <button class="btn btn-danger btn-xs btn-del-proj" data-id="${p.id}">Delete</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Wire up delete handlers
+      document.querySelectorAll('.btn-del-proj').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          const ok = await confirmDialog('Permanently delete this project from your portfolio?', {
+            variant: 'danger',
+            confirmText: 'Delete Project'
+          });
+          if (ok) {
+            const { error } = await deleteProject(id);
+            if (!error) {
+              allProjects = allProjects.filter(p => p.id !== id);
+              updateCounts();
+              renderCurrentTab();
+              showToast('Project removed.', 'info');
+            } else {
+              showToast(error.message || 'Could not delete project.', 'error');
+            }
+          }
+        });
+      });
+    }
+
+    // Tabs
+    document.querySelectorAll('.portfolio-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.portfolio-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        activeTab = tab.dataset.tab;
+        renderCurrentTab();
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

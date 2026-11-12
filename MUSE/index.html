@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MUSE — Find Your Inspiration. Share Your Creation.</title>
+  <meta name="description" content="A warm, welcoming creative social platform for designers, developers, photographers, and artists." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="landing-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-content">
+        <span class="badge badge-terracotta hero-badge">Welcome to MUSE</span>
+        <h1 class="hero-title">Find your inspiration. <br /><span class="text-terracotta">Share your creation.</span></h1>
+        <p class="hero-subtitle">
+          A thoughtfully curated creative studio where graphic designers, UI/UX thinkers, developers, and visual artists present their work, exchange constructive feedback, and form meaningful connections.
+        </p>
+        <div class="hero-actions">
+          <a href="signup.html" class="btn btn-primary btn-lg">Join the Community</a>
+          <a href="explore.html" class="btn btn-outline btn-lg">Explore Projects</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat-item">
+            <span class="hero-stat-num">10k+</span>
+            <span class="hero-stat-label">Creative Projects</span>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-num">4.8k</span>
+            <span class="hero-stat-label">Independent Creators</span>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-num">100%</span>
+            <span class="hero-stat-label">Community Driven</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image-grid">
+          <div class="hero-card hero-card-1">
+            <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&auto=format&fit=crop&q=80" alt="Abstract fluid art" />
+            <div class="hero-card-caption">
+              <h4>Fluidity in Motion</h4>
+              <span>Illustration • Soft Sage</span>
+            </div>
+          </div>
+          <div class="hero-card hero-card-2">
+            <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80" alt="Editorial design preview" />
+            <div class="hero-card-caption">
+              <h4>Minimal Editorial System</h4>
+              <span>UI/UX Design</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Core Principles / Value Proposition -->
+  <section class="section principles-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="badge badge-sand">Why MUSE?</span>
+        <h2 class="section-title">Built for creators, not algorithms</h2>
+        <p class="section-desc">We believe great work takes time, intention, and a community that genuinely cares about craft.</p>
+      </div>
+
+      <div class="grid grid-cols-3 principles-grid">
+        <div class="card principle-card">
+          <div class="principle-icon-wrap icon-sage">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <h3 class="principle-title">Creativity First</h3>
+          <p class="principle-text">Give projects and ideas the main stage. High-fidelity project galleries, detailed case studies, and tool tags showcase your true process.</p>
+        </div>
+
+        <div class="card principle-card">
+          <div class="principle-icon-wrap icon-terracotta">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <h3 class="principle-title">Community Over Popularity</h3>
+          <p class="principle-text">Encourage constructive critiques and meaningful feedback, not just mindless vanity metrics or follower races.</p>
+        </div>
+
+        <div class="card principle-card">
+          <div class="principle-icon-wrap icon-sand">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h3 class="principle-title">Clear Ownership & Trust</h3>
+          <p class="principle-text">You own your work. Protected by customizable privacy settings and full control over your portfolio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curated Featured Work -->
+  <section class="section featured-work-section">
+    <div class="container">
+      <div class="section-header-flex">
+        <div>
+          <span class="badge badge-sage">Handpicked</span>
+          <h2 class="section-title">Featured Creations</h2>
+          <p class="section-desc">Inspiring work crafted by talented creators across the globe.</p>
+        </div>
+        <a href="explore.html" class="btn btn-outline">Browse All &rarr;</a>
+      </div>
+
+      <div class="projects-grid" id="featuredProjectsGrid">
+        <!-- Dynamic loading state / fallback featured items -->
+        <article class="project-card">
+          <div class="project-card-media">
+            <a href="explore.html">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80" alt="Kinetic Branding & Type" class="project-card-img" />
+            </a>
+            <span class="badge badge-category">Graphic Design</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title"><a href="explore.html">Kinetic Branding & Editorial Type</a></h3>
+            <div class="project-card-footer">
+              <div class="project-creator-link">
+                <img src="assets/images/default-avatar.svg" alt="Elena Rostova" class="project-creator-avatar" />
+                <span class="project-creator-name">Elena Rostova</span>
+              </div>
+              <div class="project-card-stats">
+                <span class="stat-item">♥ 142</span>
+                <span class="stat-item">💬 18</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-media">
+            <a href="explore.html">
+              <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&auto=format&fit=crop&q=80" alt="Botanical Design System" class="project-card-img" />
+            </a>
+            <span class="badge badge-category">UI/UX</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title"><a href="explore.html">Botanical Studio Design System</a></h3>
+            <div class="project-card-footer">
+              <div class="project-creator-link">
+                <img src="assets/images/default-avatar.svg" alt="Marcus Chen" class="project-creator-avatar" />
+                <span class="project-creator-name">Marcus Chen</span>
+              </div>
+              <div class="project-card-stats">
+                <span class="stat-item">♥ 98</span>
+                <span class="stat-item">💬 12</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-media">
+            <a href="explore.html">
+              <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800&auto=format&fit=crop&q=80" alt="Loom Oil Painting" class="project-card-img" />
+            </a>
+            <span class="badge badge-category">Digital Art</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title"><a href="explore.html">Loom: Digital Oil Exploration</a></h3>
+            <div class="project-card-footer">
+              <div class="project-creator-link">
+                <img src="assets/images/default-avatar.svg" alt="Sarah Jenkins" class="project-creator-avatar" />
+                <span class="project-creator-name">Sarah Jenkins</span>
+              </div>
+              <div class="project-card-stats">
+                <span class="stat-item">♥ 214</span>
+                <span class="stat-item">💬 27</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Spotlight -->
+  <section class="section creators-section bg-surface">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="badge badge-terracotta">Community Spotlight</span>
+        <h2 class="section-title">Meet Emerging Creators</h2>
+        <p class="section-desc">Connect with inspiring people who bring fresh perspectives to the studio every day.</p>
+      </div>
+
+      <div class="grid grid-cols-3 creators-grid" id="creatorsSpotlightGrid">
+        <div class="creator-card">
+          <div class="creator-card-header">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Sophia Vance" class="creator-avatar" />
+          </div>
+          <div class="creator-card-body">
+            <h4 class="creator-name"><a href="explore.html">Sophia Vance</a></h4>
+            <p class="creator-handle">@sophiavance</p>
+            <p class="creator-bio">Visual storyteller & brand strategist focusing on organic identities.</p>
+            <div class="creator-skills">
+              <span class="badge badge-skill">Branding</span>
+              <span class="badge badge-skill">Figma</span>
+              <span class="badge badge-skill">Typography</span>
+            </div>
+            <a href="explore.html" class="btn btn-outline btn-sm creator-view-btn">View Work</a>
+          </div>
+        </div>
+
+        <div class="creator-card">
+          <div class="creator-card-header">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80" alt="Tariq Mansoor" class="creator-avatar" />
+          </div>
+          <div class="creator-card-body">
+            <h4 class="creator-name"><a href="explore.html">Tariq Mansoor</a></h4>
+            <p class="creator-handle">@tariqcreative</p>
+            <p class="creator-bio">Frontend engineer crafting interactive micro-interactions & 3D canvases.</p>
+            <div class="creator-skills">
+              <span class="badge badge-skill">Web Dev</span>
+              <span class="badge badge-skill">Three.js</span>
+              <span class="badge badge-skill">CSS</span>
+            </div>
+            <a href="explore.html" class="btn btn-outline btn-sm creator-view-btn">View Work</a>
+          </div>
+        </div>
+
+        <div class="creator-card">
+          <div class="creator-card-header">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&auto=format&fit=crop&q=80" alt="Aria Montgomery" class="creator-avatar" />
+          </div>
+          <div class="creator-card-body">
+            <h4 class="creator-name"><a href="explore.html">Aria Montgomery</a></h4>
+            <p class="creator-handle">@ariamont</p>
+            <p class="creator-bio">Editorial photographer exploring warm lighting and intimate compositions.</p>
+            <div class="creator-skills">
+              <span class="badge badge-skill">Photography</span>
+              <span class="badge badge-skill">Lightroom</span>
+              <span class="badge badge-skill">Print</span>
+            </div>
+            <a href="explore.html" class="btn btn-outline btn-sm creator-view-btn">View Work</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creative Challenges Teaser -->
+  <section class="section challenges-teaser-section">
+    <div class="container">
+      <div class="challenge-cta-card">
+        <div class="challenge-cta-content">
+          <span class="badge badge-sage">Weekly Challenge</span>
+          <h2 class="challenge-cta-title">Join the Earth & Form Design Prompt</h2>
+          <p class="challenge-cta-desc">
+            Explore organic textures, warm palettes, and tactile shapes. Submit your interpretation before Sunday midnight for a chance to be featured in the MUSE studio gallery.
+          </p>
+          <div class="challenge-cta-actions">
+            <a href="challenges.html" class="btn btn-primary btn-lg">Explore Challenges</a>
+          </div>
+        </div>
+        <div class="challenge-cta-img">
+          <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=600&auto=format&fit=crop&q=80" alt="Earth & Form Challenge preview" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="section cta-banner-section">
+    <div class="container text-center">
+      <h2 class="cta-banner-title">Ready to bring your work into the light?</h2>
+      <p class="cta-banner-desc">Create your free creator portfolio today. No algorithms, just creative minds sharing inspiration.</p>
+      <div class="cta-banner-actions">
+        <a href="signup.html" class="btn btn-accent btn-lg">Get Started Free</a>
+        <a href="login.html" class="btn btn-outline btn-lg">Sign In to Your Space</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { getPublishedProjects, renderProjectCard } from './js/projects.js';
+
+    // Hydrate featured projects if Supabase has real projects
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const { data: projects } = await getPublishedProjects({ limit: 3 });
+        if (projects && projects.length > 0) {
+          const grid = document.getElementById('featuredProjectsGrid');
+          if (grid) {
+            grid.innerHTML = projects.map(p => renderProjectCard(p)).join('');
+          }
+        }
+      } catch (e) {
+        console.debug('Loaded static fallback projects on landing page');
+      }
+    });
+  </script>
+</body>
+</html>

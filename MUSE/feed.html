@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Feed — MUSE</title>
+  <meta name="description" content="Stay updated with new projects from creators you follow on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="feed-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container feed-container">
+      <div class="feed-layout">
+        <!-- Main Feed Stream -->
+        <section class="feed-stream">
+          <div class="feed-header">
+            <div>
+              <h1 class="feed-title">Home Feed</h1>
+              <p class="feed-subtitle" id="feedSubtitle">Recent work from community creators</p>
+            </div>
+            <a href="create-project.html" class="btn btn-primary btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+                <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              New Project
+            </a>
+          </div>
+
+          <!-- Loading state -->
+          <div id="feedLoading" class="loading-state">
+            <div class="spinner-ring"></div>
+            <p>Gathering fresh inspiration...</p>
+          </div>
+
+          <!-- Projects Stream Container -->
+          <div class="feed-items-list" id="feedProjectsList">
+            <!-- Feed items will be injected here -->
+          </div>
+
+          <!-- Empty Feed State -->
+          <div id="emptyFeed" class="empty-state" style="display:none;">
+            <div class="empty-icon">🌿</div>
+            <h3 class="empty-title">Your feed is quiet</h3>
+            <p class="empty-desc">Follow more creators to see their latest projects here, or explore the wider community!</p>
+            <div class="empty-actions">
+              <a href="explore.html" class="btn btn-primary">Discover Creators</a>
+              <a href="create-project.html" class="btn btn-outline">Share Your First Work</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Feed Sidebar (Right Column) -->
+        <aside class="feed-sidebar">
+          <!-- Active challenge widget -->
+          <div class="sidebar-widget card">
+            <div class="widget-header">
+              <span class="badge badge-sage">Weekly Challenge</span>
+              <h3 class="widget-title">Earth & Form</h3>
+            </div>
+            <p class="widget-desc">Explore organic textures, warm palettes, and tactile shapes before Sunday.</p>
+            <a href="challenges.html" class="btn btn-outline btn-sm btn-block">View Challenge</a>
+          </div>
+
+          <!-- Creator Suggestions widget -->
+          <div class="sidebar-widget card">
+            <h3 class="widget-title">Creators to Follow</h3>
+            <div class="suggested-creators-list" id="suggestedCreatorsList">
+              <div class="suggested-creator-item">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Sophia Vance" class="suggested-avatar" />
+                <div class="suggested-info">
+                  <h4 class="suggested-name"><a href="explore.html">Sophia Vance</a></h4>
+                  <span class="suggested-tag">Brand Strategist</span>
+                </div>
+                <a href="explore.html" class="btn btn-outline btn-xs">View</a>
+              </div>
+              <div class="suggested-creator-item">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Tariq Mansoor" class="suggested-avatar" />
+                <div class="suggested-info">
+                  <h4 class="suggested-name"><a href="explore.html">Tariq Mansoor</a></h4>
+                  <span class="suggested-tag">Frontend & 3D</span>
+                </div>
+                <a href="explore.html" class="btn btn-outline btn-xs">View</a>
+              </div>
+              <div class="suggested-creator-item">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Aria Montgomery" class="suggested-avatar" />
+                <div class="suggested-info">
+                  <h4 class="suggested-name"><a href="explore.html">Aria Montgomery</a></h4>
+                  <span class="suggested-tag">Photographer</span>
+                </div>
+                <a href="explore.html" class="btn btn-outline btn-xs">View</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Navigation links -->
+          <div class="sidebar-footer-links">
+            <a href="explore.html">Explore</a> &bull;
+            <a href="challenges.html">Challenges</a> &bull;
+            <a href="saved.html">Bookmarks</a> &bull;
+            <a href="settings.html">Settings</a>
+            <p class="sidebar-copyright">&copy; 2026 MUSE Studio</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { getHomeFeed } from './js/feed.js';
+    import { renderProjectCard } from './js/projects.js';
+    import { toggleLike, toggleBookmark } from './js/interactions.js';
+    import { showToast } from './js/common.js';
+
+    const loading = document.getElementById('feedLoading');
+    const container = document.getElementById('feedProjectsList');
+    const emptyState = document.getElementById('emptyFeed');
+    const subtitle = document.getElementById('feedSubtitle');
+
+    async function loadFeed() {
+      loading.style.display = 'block';
+      emptyState.style.display = 'none';
+
+      const { data, isPersonalized, error } = await getHomeFeed({ limit: 12 });
+      loading.style.display = 'none';
+
+      if (isPersonalized) {
+        subtitle.textContent = "Updates from creators you're following";
+      }
+
+      if (data && data.length > 0) {
+        container.innerHTML = `
+          <div class="projects-grid">
+            ${data.map(p => renderProjectCard(p)).join('')}
+          </div>
+        `;
+      } else {
+        // Fallback default sample cards if Supabase hasn't got rows yet
+        container.innerHTML = `
+          <div class="projects-grid">
+            ${renderSampleCards()}
+          </div>
+        `;
+      }
+    }
+
+    function renderSampleCards() {
+      return `
+        <article class="project-card">
+          <div class="project-card-media">
+            <a href="explore.html"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80" alt="Kinetic Branding" class="project-card-img" /></a>
+            <span class="badge badge-category">Graphic Design</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title"><a href="explore.html">Kinetic Branding & Editorial Type</a></h3>
+            <div class="project-card-footer">
+              <div class="project-creator-link">
+                <img src="assets/images/default-avatar.svg" alt="Elena Rostova" class="project-creator-avatar" />
+                <span class="project-creator-name">Elena Rostova</span>
+              </div>
+              <div class="project-card-stats"><span class="stat-item">♥ 142</span><span class="stat-item">💬 18</span></div>
+            </div>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-media">
+            <a href="explore.html"><img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&auto=format&fit=crop&q=80" alt="Botanical Design System" class="project-card-img" /></a>
+            <span class="badge badge-category">UI/UX</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title"><a href="explore.html">Botanical Studio Design System</a></h3>
+            <div class="project-card-footer">
+              <div class="project-creator-link">
+                <img src="assets/images/default-avatar.svg" alt="Marcus Chen" class="project-creator-avatar" />
+                <span class="project-creator-name">Marcus Chen</span>
+              </div>
+              <div class="project-card-stats"><span class="stat-item">♥ 98</span><span class="stat-item">💬 12</span></div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFeed);
+  </script>
+</body>
+</html>

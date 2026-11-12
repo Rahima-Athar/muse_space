@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discover — MUSE</title>
+  <meta name="description" content="Discover curated projects, trending creators, and creative categories on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="discover-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <!-- Discover Header -->
+    <header class="page-header bg-surface">
+      <div class="container">
+        <span class="badge badge-sage">Curated Inspiration</span>
+        <h1 class="page-title">Discover Creative Work</h1>
+        <p class="page-subtitle">Handpicked projects, standout creators, and inspiring aesthetics from our global studio.</p>
+
+        <!-- Category pills -->
+        <div class="category-pills" id="categoryPills">
+          <button class="pill active" data-category="All">All Categories</button>
+          <button class="pill" data-category="Graphic Design">Graphic Design</button>
+          <button class="pill" data-category="UI/UX">UI/UX Design</button>
+          <button class="pill" data-category="Web Development">Web Development</button>
+          <button class="pill" data-category="Photography">Photography</button>
+          <button class="pill" data-category="Illustration">Illustration</button>
+          <button class="pill" data-category="Digital Art">Digital Art</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container section-sm">
+      <!-- Curated Highlights Carousel / Banner -->
+      <section class="discover-highlight-banner">
+        <div class="highlight-card">
+          <div class="highlight-info">
+            <span class="badge badge-terracotta">Featured Exhibition</span>
+            <h2 class="highlight-title">Architectures of Light & Silence</h2>
+            <p class="highlight-desc">An editorial exploration into atmospheric 3D spaces and tactile shadows by community creators.</p>
+            <a href="explore.html?category=Digital%20Art" class="btn btn-primary">Explore Curation</a>
+          </div>
+          <div class="highlight-image">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80" alt="Architectural space" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Trending Creators Section -->
+      <section class="section-sm">
+        <div class="section-header-flex">
+          <div>
+            <h2 class="section-title-sm">Trending Creators</h2>
+            <p class="section-desc-sm">People shaping the creative pulse on MUSE this week.</p>
+          </div>
+          <a href="explore.html" class="link-inline">View all creators &rarr;</a>
+        </div>
+        <div class="creators-horizontal-grid" id="trendingCreatorsList">
+          <!-- Fallback mock cards populated dynamically -->
+          <div class="creator-mini-card">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&auto=format&fit=crop&q=80" alt="Amara James" class="creator-mini-avatar" />
+            <h4 class="creator-mini-name">Amara James</h4>
+            <span class="creator-mini-role">Typography & Type</span>
+            <a href="explore.html" class="btn btn-outline btn-xs">Follow</a>
+          </div>
+          <div class="creator-mini-card">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&auto=format&fit=crop&q=80" alt="David Kalu" class="creator-mini-avatar" />
+            <h4 class="creator-mini-name">David Kalu</h4>
+            <span class="creator-mini-role">Creative Technologist</span>
+            <a href="explore.html" class="btn btn-outline btn-xs">Follow</a>
+          </div>
+          <div class="creator-mini-card">
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&auto=format&fit=crop&q=80" alt="Sienna Miller" class="creator-mini-avatar" />
+            <h4 class="creator-mini-name">Sienna Miller</h4>
+            <span class="creator-mini-role">Editorial & Print</span>
+            <a href="explore.html" class="btn btn-outline btn-xs">Follow</a>
+          </div>
+          <div class="creator-mini-card">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=160&auto=format&fit=crop&q=80" alt="Liam Vance" class="creator-mini-avatar" />
+            <h4 class="creator-mini-name">Liam Vance</h4>
+            <span class="creator-mini-role">Spatial Design</span>
+            <a href="explore.html" class="btn btn-outline btn-xs">Follow</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects Section -->
+      <section class="section-sm">
+        <div class="section-header-flex">
+          <div>
+            <h2 class="section-title-sm" id="sectionTitle">Curated Works</h2>
+            <p class="section-desc-sm">Freshly published creations from across all creative disciplines.</p>
+          </div>
+          <div class="sort-selector">
+            <label for="sortOrder" class="sr-only">Sort By</label>
+            <select id="sortOrder" class="form-select form-select-sm">
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Appreciated</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="projectsLoading" class="loading-state" style="display:none;">
+          <div class="spinner-ring"></div>
+          <p>Discovering works...</p>
+        </div>
+
+        <div class="projects-grid" id="discoverProjectsGrid">
+          <!-- Fallback static projects for instant visual polish -->
+          <article class="project-card">
+            <div class="project-card-media">
+              <a href="project-details.html?id=demo1">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80" alt="Kinetic Typography" class="project-card-img" />
+              </a>
+              <span class="badge badge-category">Graphic Design</span>
+            </div>
+            <div class="project-card-body">
+              <h3 class="project-card-title"><a href="project-details.html?id=demo1">Harmonics: Kinetic Typography Series</a></h3>
+              <div class="project-card-footer">
+                <div class="project-creator-link">
+                  <img src="assets/images/default-avatar.svg" alt="Creator" class="project-creator-avatar" />
+                  <span class="project-creator-name">Elena Rostova</span>
+                </div>
+                <div class="project-card-stats">
+                  <span class="stat-item">♥ 142</span>
+                  <span class="stat-item">💬 18</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card-media">
+              <a href="project-details.html?id=demo2">
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80" alt="Cyberpunk Synthesizer UI" class="project-card-img" />
+              </a>
+              <span class="badge badge-category">UI/UX</span>
+            </div>
+            <div class="project-card-body">
+              <h3 class="project-card-title"><a href="project-details.html?id=demo2">Modulate: Modular Synthesizer Interface</a></h3>
+              <div class="project-card-footer">
+                <div class="project-creator-link">
+                  <img src="assets/images/default-avatar.svg" alt="Creator" class="project-creator-avatar" />
+                  <span class="project-creator-name">Kasper Holm</span>
+                </div>
+                <div class="project-card-stats">
+                  <span class="stat-item">♥ 310</span>
+                  <span class="stat-item">💬 45</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card-media">
+              <a href="project-details.html?id=demo3">
+                <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&auto=format&fit=crop&q=80" alt="Web platform" class="project-card-img" />
+              </a>
+              <span class="badge badge-category">Web Development</span>
+            </div>
+            <div class="project-card-body">
+              <h3 class="project-card-title"><a href="project-details.html?id=demo3">Solstice: Audio-Reactive Web Visualizer</a></h3>
+              <div class="project-card-footer">
+                <div class="project-creator-link">
+                  <img src="assets/images/default-avatar.svg" alt="Creator" class="project-creator-avatar" />
+                  <span class="project-creator-name">Tariq Mansoor</span>
+                </div>
+                <div class="project-card-stats">
+                  <span class="stat-item">♥ 189</span>
+                  <span class="stat-item">💬 22</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display:none;">
+          <div class="empty-icon">🎨</div>
+          <h3 class="empty-title">No projects found</h3>
+          <p class="empty-desc">Try choosing a different category or be the first to publish in this topic!</p>
+          <a href="create-project.html" class="btn btn-primary">Create Project</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { getPublishedProjects, renderProjectCard } from './js/projects.js';
+    import { getFeaturedCreators, renderCreatorCard } from './js/feed.js';
+
+    let currentCategory = 'All';
+    let currentSort = 'newest';
+
+    const grid = document.getElementById('discoverProjectsGrid');
+    const loading = document.getElementById('projectsLoading');
+    const emptyState = document.getElementById('emptyState');
+    const pills = document.querySelectorAll('#categoryPills .pill');
+    const sortSelect = document.getElementById('sortOrder');
+
+    async function loadProjects() {
+      loading.style.display = 'block';
+      emptyState.style.display = 'none';
+
+      const { data, error } = await getPublishedProjects({
+        category: currentCategory,
+        sortBy: currentSort,
+        limit: 12
+      });
+
+      loading.style.display = 'none';
+
+      if (data && data.length > 0) {
+        grid.innerHTML = data.map(p => renderProjectCard(p)).join('');
+        emptyState.style.display = 'none';
+      } else if (!error && data.length === 0 && currentCategory !== 'All') {
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+      }
+    }
+
+    // Category pills filter
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentCategory = pill.dataset.category;
+        loadProjects();
+      });
+    });
+
+    // Sort order change
+    sortSelect?.addEventListener('change', (e) => {
+      currentSort = e.target.value;
+      loadProjects();
+    });
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProjects();
+    });
+  </script>
+</body>
+</html>

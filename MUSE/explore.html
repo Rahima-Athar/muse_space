@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore Projects & Creators — MUSE</title>
+  <meta name="description" content="Search creative projects, discover new creators, and filter by skills and categories on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="explore-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <!-- Explore Search Header -->
+    <header class="page-header bg-surface">
+      <div class="container">
+        <h1 class="page-title">Explore the Creative Universe</h1>
+        <p class="page-subtitle">Find compelling projects, discover new styles, and search across thousands of independent creators.</p>
+
+        <!-- Search Bar Form -->
+        <form id="searchForm" class="search-bar-form" role="search">
+          <div class="search-input-wrap">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="search" id="searchInput" class="search-input" placeholder="Search projects by title, description, tags, or tools (e.g. Figma, Three.js)..." autocomplete="off" />
+            <button type="submit" class="btn btn-primary search-submit-btn">Search</button>
+          </div>
+        </form>
+
+        <!-- Navigation Tabs: Projects vs Creators -->
+        <div class="explore-tabs">
+          <button class="tab-btn active" id="tabProjects" data-tab="projects">Projects</button>
+          <button class="tab-btn" id="tabCreators" data-tab="creators">Creators</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container section-sm">
+      <!-- Filter and Sort Bar for Projects -->
+      <div class="filters-bar" id="projectsFilterBar">
+        <div class="filters-left">
+          <!-- Category selector -->
+          <div class="filter-group">
+            <label for="categoryFilter" class="filter-label">Category:</label>
+            <select id="categoryFilter" class="form-select form-select-sm">
+              <option value="All">All Categories</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="UI/UX">UI/UX Design</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Photography">Photography</option>
+              <option value="Illustration">Illustration</option>
+              <option value="Digital Art">Digital Art</option>
+            </select>
+          </div>
+
+          <!-- Tools input filter -->
+          <div class="filter-group">
+            <label for="toolsFilter" class="filter-label">Tool:</label>
+            <input type="text" id="toolsFilter" class="form-input form-input-sm" placeholder="e.g. Blender, Figma" />
+          </div>
+        </div>
+
+        <div class="filters-right">
+          <div class="filter-group">
+            <label for="sortOrder" class="filter-label">Sort:</label>
+            <select id="sortOrder" class="form-select form-select-sm">
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Appreciated</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="exploreLoading" class="loading-state" style="display:none;">
+        <div class="spinner-ring"></div>
+        <p>Searching creations...</p>
+      </div>
+
+      <!-- Projects View Container -->
+      <div id="projectsView">
+        <div class="projects-grid" id="exploreProjectsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Creators View Container (Hidden by default) -->
+      <div id="creatorsView" style="display:none;">
+        <div class="grid grid-cols-3 creators-grid" id="exploreCreatorsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyResults" class="empty-state" style="display:none;">
+        <div class="empty-icon">🔍</div>
+        <h3 class="empty-title">No results found</h3>
+        <p class="empty-desc">We couldn't find matches for your criteria. Try adjusting keywords or category filters.</p>
+        <button id="clearFiltersBtn" class="btn btn-outline">Clear Filters</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { getPublishedProjects, renderProjectCard } from './js/projects.js';
+    import { getFeaturedCreators, renderCreatorCard } from './js/feed.js';
+    import { supabase } from './js/supabase.js';
+
+    let activeTab = 'projects';
+    let searchQuery = '';
+    let category = 'All';
+    let toolQuery = '';
+    let sortBy = 'newest';
+
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const tabProjects = document.getElementById('tabProjects');
+    const tabCreators = document.getElementById('tabCreators');
+    const projectsView = document.getElementById('projectsView');
+    const creatorsView = document.getElementById('creatorsView');
+    const filterBar = document.getElementById('projectsFilterBar');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const toolsFilter = document.getElementById('toolsFilter');
+    const sortOrder = document.getElementById('sortOrder');
+    const loading = document.getElementById('exploreLoading');
+    const emptyResults = document.getElementById('emptyResults');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const projectsGrid = document.getElementById('exploreProjectsGrid');
+    const creatorsGrid = document.getElementById('exploreCreatorsGrid');
+
+    // Parse URL params on load
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('search')) {
+      searchQuery = urlParams.get('search');
+      searchInput.value = searchQuery;
+    }
+    if (urlParams.has('category')) {
+      category = urlParams.get('category');
+      categoryFilter.value = category;
+    }
+
+    async function fetchAndRender() {
+      loading.style.display = 'block';
+      emptyResults.style.display = 'none';
+
+      if (activeTab === 'projects') {
+        const fullSearch = [searchQuery, toolQuery].filter(Boolean).join(' ');
+        const { data, error } = await getPublishedProjects({
+          category,
+          search: fullSearch,
+          sortBy,
+          limit: 18
+        });
+
+        loading.style.display = 'none';
+
+        if (data && data.length > 0) {
+          projectsGrid.innerHTML = data.map(p => renderProjectCard(p)).join('');
+          emptyResults.style.display = 'none';
+        } else {
+          // If query produced zero items
+          projectsGrid.innerHTML = '';
+          emptyResults.style.display = 'block';
+        }
+      } else {
+        // Creators tab
+        let query = supabase.from('profiles').select('*').limit(18);
+        if (searchQuery.trim()) {
+          const term = `%${searchQuery.trim()}%`;
+          query = query.or(`username.ilike.${term},full_name.ilike.${term},bio.ilike.${term},skills.ilike.${term}`);
+        }
+
+        const { data, error } = await query;
+        loading.style.display = 'none';
+
+        if (data && data.length > 0) {
+          creatorsGrid.innerHTML = data.map(c => renderCreatorCard(c)).join('');
+          emptyResults.style.display = 'none';
+        } else {
+          creatorsGrid.innerHTML = '';
+          emptyResults.style.display = 'block';
+        }
+      }
+    }
+
+    // Tabs
+    tabProjects.addEventListener('click', () => {
+      activeTab = 'projects';
+      tabProjects.classList.add('active');
+      tabCreators.classList.remove('active');
+      projectsView.style.display = 'block';
+      creatorsView.style.display = 'none';
+      filterBar.style.display = 'flex';
+      fetchAndRender();
+    });
+
+    tabCreators.addEventListener('click', () => {
+      activeTab = 'creators';
+      tabCreators.classList.add('active');
+      tabProjects.classList.remove('active');
+      projectsView.style.display = 'none';
+      creatorsView.style.display = 'block';
+      filterBar.style.display = 'none';
+      fetchAndRender();
+    });
+
+    // Form search
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      searchQuery = searchInput.value.trim();
+      fetchAndRender();
+    });
+
+    categoryFilter.addEventListener('change', (e) => {
+      category = e.target.value;
+      fetchAndRender();
+    });
+
+    toolsFilter.addEventListener('input', (e) => {
+      toolQuery = e.target.value.trim();
+      // debounce or fetch
+      fetchAndRender();
+    });
+
+    sortOrder.addEventListener('change', (e) => {
+      sortBy = e.target.value;
+      fetchAndRender();
+    });
+
+    clearFiltersBtn.addEventListener('click', () => {
+      searchQuery = '';
+      category = 'All';
+      toolQuery = '';
+      searchInput.value = '';
+      categoryFilter.value = 'All';
+      toolsFilter.value = '';
+      fetchAndRender();
+    });
+
+    document.addEventListener('DOMContentLoaded', fetchAndRender);
+  </script>
+</body>
+</html>

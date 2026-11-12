@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — MUSE</title>
+  <meta name="description" content="Learn about MUSE, a curated creative studio where designers, developers, photographers, and artists share their craft and inspire one another." />
+
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <style>
+    /* About page — scoped styles only */
+    .about-page .about-hero {
+      padding: var(--space-3xl) 0 var(--space-2xl);
+      text-align: center;
+    }
+    .about-page .about-hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 1.08;
+      color: var(--deep-olive);
+      max-width: 900px;
+      margin: var(--space-md) auto;
+    }
+    .about-page .about-hero-subtitle {
+      max-width: 720px;
+      margin: 0 auto var(--space-xl);
+      color: var(--deep-olive-light);
+      font-size: var(--fs-lg);
+      line-height: var(--lh-relaxed);
+    }
+    .about-page .about-hero-actions {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .about-page .about-hero-media {
+      margin-bottom: var(--space-3xl);
+    }
+    .about-page .about-hero-media img {
+      display: block;
+      width: 100%;
+      height: clamp(240px, 38vw, 460px);
+      object-fit: cover;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* Scoped buttons */
+    .about-page .btn-primary {
+      background-color: var(--terracotta);
+      border: 1px solid var(--terracotta);
+      color: var(--warm-ivory);
+    }
+    .about-page .btn-primary:hover {
+      background-color: var(--terracotta-dark);
+      border-color: var(--terracotta-dark);
+      color: var(--warm-ivory);
+    }
+    .about-page .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--deep-olive);
+      color: var(--deep-olive);
+    }
+    .about-page .btn-outline:hover {
+      background: var(--deep-olive);
+      color: var(--warm-ivory);
+    }
+    .about-page .btn-lg {
+      padding: 0.85em 1.6em;
+      font-size: var(--fs-base);
+      font-weight: var(--fw-semibold);
+      border-radius: var(--radius-full, 9999px);
+    }
+
+    /* Stats band */
+    .about-page .about-stats {
+      background: var(--deep-olive);
+      padding: var(--space-2xl) 0;
+      margin-bottom: var(--space-3xl);
+    }
+    .about-page .about-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-xl);
+      text-align: center;
+    }
+    .about-page .about-stat strong {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      color: var(--warm-ivory);
+      margin-bottom: var(--space-xs);
+    }
+    .about-page .about-stat span {
+      font-size: var(--fs-sm);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(243, 232, 208, 0.75);
+    }
+
+    /* Shared section rhythm */
+    .about-page .about-section {
+      margin-bottom: var(--space-3xl);
+    }
+    .about-page .about-section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      line-height: 1.15;
+      color: var(--deep-olive);
+      margin: var(--space-sm) 0 var(--space-md);
+    }
+    .about-page .about-section-head {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto var(--space-xl);
+    }
+
+    /* Mission */
+    .about-page .about-mission {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--space-2xl);
+      align-items: center;
+    }
+    .about-page .about-mission-text p {
+      color: var(--deep-olive-light);
+      line-height: var(--lh-relaxed);
+      margin-bottom: var(--space-md);
+    }
+    .about-page .about-mission-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 340px;
+      object-fit: cover;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* Values */
+    .about-page .about-values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: var(--space-lg);
+    }
+    .about-page .about-value-card {
+      background: var(--white);
+      border: var(--border-width) solid var(--sand-beige-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .about-page .about-value-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(23, 61, 43, 0.12);
+    }
+    .about-page .about-value-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: rgba(168, 183, 149, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-md);
+    }
+    .about-page .about-value-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--terracotta);
+    }
+    .about-page .about-value-card h3 {
+      font-size: var(--fs-md);
+      color: var(--deep-olive);
+      margin-bottom: var(--space-xs);
+    }
+    .about-page .about-value-card p {
+      font-size: var(--fs-sm);
+      color: var(--deep-olive-light);
+      line-height: var(--lh-normal);
+      margin: 0;
+    }
+
+    /* How it works */
+    .about-page .about-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+    .about-page .about-step {
+      background: var(--warm-ivory);
+      border: var(--border-width) solid var(--sand-beige-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+    }
+    .about-page .about-step-num {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: var(--fs-2xl);
+      color: var(--terracotta);
+      margin-bottom: var(--space-sm);
+    }
+    .about-page .about-step h3 {
+      font-size: var(--fs-md);
+      color: var(--deep-olive);
+      margin-bottom: var(--space-xs);
+    }
+    .about-page .about-step p {
+      font-size: var(--fs-sm);
+      color: var(--deep-olive-light);
+      line-height: var(--lh-normal);
+      margin: 0;
+    }
+
+    /* CTA */
+    .about-page .about-cta-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-xl);
+      padding: var(--space-3xl) var(--space-2xl);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, var(--deep-olive) 0%, #234F3A 100%);
+      color: var(--warm-ivory);
+      box-shadow: var(--shadow-card);
+    }
+    .about-page .about-cta-card h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: var(--warm-ivory);
+      margin-bottom: var(--space-xs);
+    }
+    .about-page .about-cta-card p {
+      max-width: 560px;
+      color: rgba(243, 232, 208, 0.8);
+      line-height: var(--lh-normal);
+      margin: 0;
+    }
+    .about-page .about-cta-actions {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .about-page .about-cta-card .btn-outline {
+      border-color: var(--warm-ivory);
+      color: var(--warm-ivory);
+    }
+    .about-page .about-cta-card .btn-outline:hover {
+      background: var(--warm-ivory);
+      color: var(--deep-olive);
+    }
+
+    @media (max-width: 900px) {
+      .about-page .about-mission {
+        grid-template-columns: 1fr;
+      }
+      .about-page .about-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .about-page .about-steps {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 560px) {
+      .about-page .about-hero {
+        padding-top: var(--space-2xl);
+      }
+      .about-page .about-cta-card {
+        padding: var(--space-2xl) var(--space-xl);
+      }
+    }
+  </style>
+</head>
+<body class="about-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <!-- Hero -->
+    <section class="about-hero">
+      <div class="container">
+        <span class="badge badge-sage">Our Story</span>
+        <h1 class="about-hero-title">Where creative minds find their muse.</h1>
+        <p class="about-hero-subtitle">
+          MUSE is a calm, curated studio for designers, developers, photographers, and artists to share their craft,
+          discover fresh inspiration, and grow alongside a generous creative community.
+        </p>
+        <div class="about-hero-actions">
+          <a href="signup.html" class="btn btn-primary btn-lg">Join Studio</a>
+          <a href="explore.html" class="btn btn-outline btn-lg">Explore Work</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hero Image -->
+    <div class="container about-hero-media">
+      <img
+        src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&auto=format&fit=crop&q=80"
+        alt="A bright, calm creative studio workspace"
+        loading="lazy"
+      />
+    </div>
+
+    <!-- Stats -->
+    <section class="about-stats">
+      <div class="container about-stats-grid">
+        <div class="about-stat">
+          <strong>12k+</strong>
+          <span>Creators</span>
+        </div>
+        <div class="about-stat">
+          <strong>48k+</strong>
+          <span>Projects</span>
+        </div>
+        <div class="about-stat">
+          <strong>120+</strong>
+          <span>Challenges</span>
+        </div>
+        <div class="about-stat">
+          <strong>90+</strong>
+          <span>Countries</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission -->
+    <section class="container about-section about-mission">
+      <div class="about-mission-text">
+        <span class="badge badge-sage">Our Mission</span>
+        <h2 class="about-section-title">A quieter place to do bold work.</h2>
+        <p>
+          The internet is loud. MUSE is designed to be the opposite — a considered space where the work comes first.
+          No endless noise, no vanity metrics shouting for attention. Just thoughtful projects, honest process notes,
+          and people who care about craft.
+        </p>
+        <p>
+          We believe inspiration grows when creators can see how others think, not only what they ship. That is why every
+          project on MUSE is presented with context: the tools, the references, and the decisions behind the final piece.
+        </p>
+      </div>
+      <div class="about-mission-media">
+        <img
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&auto=format&fit=crop&q=80"
+          alt="Creators collaborating around a table"
+          loading="lazy"
+        />
+      </div>
+    </section>
+
+    <!-- Values -->
+    <section class="container about-section">
+      <div class="about-section-head">
+        <span class="badge badge-sage">What We Value</span>
+        <h2 class="about-section-title">Built for thoughtful creators.</h2>
+        <p class="about-hero-subtitle">
+          Four principles shape everything we build, from the feed to the weekly prompts.
+        </p>
+      </div>
+
+      <div class="about-values-grid">
+        <article class="about-value-card">
+          <span class="about-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8-4.3-4.1 5.9-.9L12 3z"></path>
+            </svg>
+          </span>
+          <h3>Curated Craft</h3>
+          <p>Quality over noise. We celebrate work that is made with intention, not content that is made for algorithms.</p>
+        </article>
+
+        <article class="about-value-card">
+          <span class="about-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </span>
+          <h3>Open Community</h3>
+          <p>Constructive feedback, shared references, and a culture of generosity. Everyone is here to learn and grow.</p>
+        </article>
+
+        <article class="about-value-card">
+          <span class="about-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </span>
+          <h3>Weekly Challenges</h3>
+          <p>Themed prompts that push you beyond your comfort zone and turn practice into a shared studio ritual.</p>
+        </article>
+
+        <article class="about-value-card">
+          <span class="about-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <path d="M9 12l2 2 4-4"></path>
+            </svg>
+          </span>
+          <h3>Creator Ownership</h3>
+          <p>Your work stays yours. You control what you publish, and every creation remains protected under creator copyright.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="container about-section">
+      <div class="about-section-head">
+        <span class="badge badge-sage">How It Works</span>
+        <h2 class="about-section-title">From first sketch to shared studio.</h2>
+      </div>
+
+      <div class="about-steps">
+        <div class="about-step">
+          <span class="about-step-num">01</span>
+          <h3>Create your studio</h3>
+          <p>Set up your profile with a short bio, your skills, and the mediums you love to work in.</p>
+        </div>
+        <div class="about-step">
+          <span class="about-step-num">02</span>
+          <h3>Publish your work</h3>
+          <p>Share projects with cover images, descriptions, and the process notes that make your craft unique.</p>
+        </div>
+        <div class="about-step">
+          <span class="about-step-num">03</span>
+          <h3>Grow with the community</h3>
+          <p>Follow creators, save inspiration, and join weekly challenges to keep your practice moving.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="container about-section">
+      <div class="about-cta-card">
+        <div>
+          <h2>Ready to share your craft?</h2>
+          <p>Join a community that celebrates thoughtful work, honest process, and the people behind the pixels.</p>
+        </div>
+        <div class="about-cta-actions">
+          <a href="signup.html" class="btn btn-primary btn-lg">Join Studio</a>
+          <a href="login.html" class="btn btn-outline btn-lg">Log In</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+</body>
+</html>

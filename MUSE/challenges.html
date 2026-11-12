@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Challenges — MUSE</title>
+  <meta name="description" content="Participate in community creative challenges, test new mediums, and gain studio recognition on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="challenges-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <!-- Header -->
+    <header class="page-header bg-surface">
+      <div class="container">
+        <span class="badge badge-terracotta">Community Studio</span>
+        <h1 class="page-title">Creative Prompts & Challenges</h1>
+        <p class="page-subtitle">Broaden your perspective, experiment with new aesthetic constraints, and get featured in our studio curation.</p>
+
+        <!-- Status Filter Tabs -->
+        <div class="category-pills" id="challengeTabs">
+          <button class="pill active" data-status="all">All Challenges</button>
+          <button class="pill" data-status="active">Active Prompts</button>
+          <button class="pill" data-status="upcoming">Upcoming</button>
+          <button class="pill" data-status="completed">Archived & Winners</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container section-sm">
+      <!-- Loading State -->
+      <div id="challengesLoading" class="loading-state">
+        <div class="spinner-ring"></div>
+        <p>Loading creative challenges...</p>
+      </div>
+
+      <!-- Challenges Grid -->
+      <div class="challenges-grid" id="challengesGrid" style="display:none;"></div>
+
+      <!-- Empty State -->
+      <div id="challengesEmptyState" class="empty-state" style="display:none;">
+        <div class="empty-icon">🏆</div>
+        <h3 class="empty-title">No challenges found</h3>
+        <p class="empty-desc">Check back soon for new prompt announcements!</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { getChallenges, renderChallengeCard } from './js/challenges.js';
+
+    let currentStatus = 'all';
+
+    async function loadChallenges() {
+      const loading = document.getElementById('challengesLoading');
+      const grid = document.getElementById('challengesGrid');
+      const empty = document.getElementById('challengesEmptyState');
+
+      loading.style.display = 'block';
+      grid.style.display = 'none';
+      empty.style.display = 'none';
+
+      const { data, error } = await getChallenges(currentStatus);
+      loading.style.display = 'none';
+
+      if (data && data.length > 0) {
+        grid.innerHTML = data.map(c => renderChallengeCard(c)).join('');
+        grid.style.display = 'grid';
+      } else {
+        // Fallback default challenges for visual readiness
+        grid.innerHTML = renderDefaultChallenges(currentStatus);
+        grid.style.display = 'grid';
+      }
+    }
+
+    function renderDefaultChallenges(status) {
+      const defaults = [
+        {
+          id: 'challenge-earth-form',
+          title: 'Earth & Form: Organic Tactility',
+          description: 'Create an identity, editorial layout, or 3D composition celebrating raw clay, unbleached paper, and earth-toned pigments.',
+          category: 'Graphic Design',
+          status: 'active',
+          deadline: '2026-11-20',
+          cover_image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800&auto=format&fit=crop&q=80',
+          challenge_submissions: [1, 2, 3, 4]
+        },
+        {
+          id: 'challenge-kinetic-posters',
+          title: 'Harmonics in Motion',
+          description: 'A 10-second interactive poster or animated typography system responding to rhythm or generative audio frequencies.',
+          category: 'Digital Art',
+          status: 'active',
+          deadline: '2026-11-28',
+          cover_image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80',
+          challenge_submissions: [1, 2]
+        },
+        {
+          id: 'challenge-minimal-editorial',
+          title: 'Architectures of Silence',
+          description: 'Editorial photography and spatial UI exploring modern brutalism, soft shadows, and spacious compositions.',
+          category: 'Photography',
+          status: 'upcoming',
+          deadline: '2026-12-05',
+          cover_image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80',
+          challenge_submissions: []
+        }
+      ];
+
+      const filtered = status === 'all' ? defaults : defaults.filter(d => d.status === status);
+      return filtered.map(c => renderChallengeCard(c)).join('');
+    }
+
+    document.querySelectorAll('#challengeTabs .pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#challengeTabs .pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentStatus = pill.dataset.status;
+        loadChallenges();
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', loadChallenges);
+  </script>
+</body>
+</html>

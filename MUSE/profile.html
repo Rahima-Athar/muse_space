@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creator Profile — MUSE</title>
+  <meta name="description" content="View creator portfolio, bio, skills, and community creations on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="profile-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container section-sm">
+      <!-- Loading State -->
+      <div id="profileLoading" class="loading-state">
+        <div class="spinner-ring"></div>
+        <p>Loading creator profile...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="profileError" class="empty-state" style="display:none;">
+        <div class="empty-icon">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <h3 class="empty-title">Profile unavailable</h3>
+        <p id="profileErrorDesc" class="empty-desc">We couldn't load this profile. Please try again.</p>
+        <div class="profile-sub-actions" style="justify-content:center;gap:12px;">
+          <button type="button" id="profileRetryBtn" class="btn btn-primary btn-sm">Try Again</button>
+          <a id="profileSignInLink" href="login.html" class="btn btn-outline btn-sm" style="display:none;">Sign In</a>
+        </div>
+      </div>
+
+      <!-- Main Profile Layout -->
+      <div id="profileContainer" style="display:none;">
+        <!-- Profile Banner Card -->
+        <header class="profile-banner-card card">
+          <div class="profile-banner-left">
+            <div class="profile-avatar-wrap">
+              <img id="creatorAvatar" src="assets/images/default-avatar.svg" alt="Avatar" class="profile-avatar-lg" />
+              <span id="onlineIndicator" class="profile-online-badge" title="Active on MUSE"></span>
+            </div>
+            
+            <div class="profile-identity">
+              <div class="profile-name-row">
+                <h1 id="creatorName" class="profile-name">Creator Name</h1>
+                <span id="proBadge" class="badge badge-terracotta badge-sm">Creator</span>
+              </div>
+              <p id="creatorUsername" class="profile-handle">@username</p>
+              <p id="creatorBio" class="profile-bio-text">Bio description...</p>
+              
+              <!-- Skills tags -->
+              <div id="creatorSkillsWrap" class="profile-skills-list"></div>
+
+              <!-- Website & Location Meta -->
+              <div class="profile-meta-row">
+                <div id="creatorWebsiteWrap" style="display:none;">
+                  <a id="creatorWebsite" href="#" target="_blank" rel="noopener noreferrer" class="link-inline-meta">
+                    🌐 <span id="creatorWebsiteText">website.com</span>
+                  </a>
+                </div>
+                <div class="creator-joined-date">
+                  📅 Member since <span id="creatorJoinedDate">2026</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-banner-right">
+            <!-- Stats Grid -->
+            <div class="profile-stats-grid">
+              <div class="profile-stat-box">
+                <strong id="creatorProjectCount">0</strong>
+                <span>Creations</span>
+              </div>
+              <div class="profile-stat-box">
+                <strong id="creatorFollowersCount">0</strong>
+                <span>Followers</span>
+              </div>
+              <div class="profile-stat-box">
+                <strong id="creatorFollowingCount">0</strong>
+                <span>Following</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="profile-cta-wrap">
+              <button id="followBtn" class="btn btn-primary btn-block">Follow Creator</button>
+              <a id="editProfileBtn" href="edit-profile.html" class="btn btn-outline btn-block" style="display:none;">Edit Profile</a>
+              <div class="profile-sub-actions">
+                <button id="shareProfileBtn" class="btn btn-outline btn-sm" title="Copy profile URL">
+                  🔗 Share
+                </button>
+                <a id="contactCreatorBtn" href="mailto:creator@example.com" class="btn btn-outline btn-sm" title="Contact Creator" style="display:none;">
+                  ✉️ Contact
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Profile Tabs -->
+        <div class="portfolio-tabs-bar">
+          <div class="portfolio-tabs">
+            <button class="portfolio-tab active" data-tab="creations">
+              Published Work (<span id="tabCountCreations">0</span>)
+            </button>
+            <button class="portfolio-tab" data-tab="about">
+              About & Studio Info
+            </button>
+          </div>
+        </div>
+
+        <!-- Creations Tab Panel -->
+        <div id="tabPanelCreations">
+          <div class="projects-grid" id="creatorProjectsGrid"></div>
+          
+          <div id="creatorEmptyState" class="empty-state" style="display:none;">
+            <div class="empty-icon">📂</div>
+            <h3 class="empty-title">No public creations yet</h3>
+            <p class="empty-desc">This creator hasn't published any public projects yet. Check back soon!</p>
+          </div>
+        </div>
+
+        <!-- About Tab Panel (Hidden by default) -->
+        <div id="tabPanelAbout" style="display:none;">
+          <div class="card about-panel-card">
+            <h3 class="section-title-sm">Artist & Design Statement</h3>
+            <p id="aboutBioFull" class="about-full-text">
+              No bio added yet.
+            </p>
+
+            <h4 class="mt-4 font-bold text-olive">Primary Mediums & Technologies</h4>
+            <div id="aboutSkillsFull" class="profile-skills-list mt-2"></div>
+
+            <h4 class="mt-4 font-bold text-olive">Studio Ethics</h4>
+            <p class="text-muted">
+              Believes in open collaboration, constructive feedback, and community-driven craft. All creations are protected under creator copyright.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { getProfile, getProfileByUsername, getProfileStats } from './js/profile.js';
+    import { getUserProjects, renderProjectCard } from './js/projects.js';
+    import { getCurrentUser, getSession, ensureCurrentProfile, onAuthStateChange } from './js/auth.js';
+    import { getSupabaseConfig } from './js/supabase.js';
+    import { toggleFollow, isFollowedByUser } from './js/interactions.js';
+    import { showToast, formatDate, escapeHtml } from './js/common.js';
+
+    const DEFAULT_AVATAR = 'assets/images/default-avatar.svg';
+    const urlParams = new URLSearchParams(window.location.search);
+    const idParam = urlParams.get('id');
+    const usernameParam = urlParams.get('u');
+    const confirmPending = urlParams.get('confirm') === '1';
+
+    let currentUser = null;
+    let targetUserId = idParam;
+    let isFollowing = false;
+
+    function showLoadingState() {
+      document.getElementById('profileLoading').style.display = 'block';
+      document.getElementById('profileContainer').style.display = 'none';
+      document.getElementById('profileError').style.display = 'none';
+    }
+
+    function showProfileError(message, showSignIn) {
+      document.getElementById('profileLoading').style.display = 'none';
+      document.getElementById('profileContainer').style.display = 'none';
+      document.getElementById('profileError').style.display = 'block';
+      document.getElementById('profileErrorDesc').textContent = message || 'Please try again in a moment.';
+      const signInLink = document.getElementById('profileSignInLink');
+      if (signInLink) signInLink.style.display = showSignIn ? 'inline-flex' : 'none';
+    }
+
+    /**
+     * Supabase restores the session from the URL hash after email confirmation
+     * asynchronously. Wait for that to finish before deciding whether a user is
+     * signed in, otherwise the page can render before the session exists.
+     */
+    async function waitForSession() {
+      try {
+        const { data } = await getSession();
+        if (data?.session) return data.session;
+      } catch (err) {
+        console.debug('[profile] getSession failed:', err);
+      }
+
+      const hasAuthParams = /(access_token|refresh_token|code=|error_description)/.test(
+        window.location.hash + window.location.search
+      );
+      if (!hasAuthParams) return null;
+
+      return new Promise((resolve) => {
+        let settled = false;
+        const finish = (session) => {
+          if (settled) return;
+          settled = true;
+          try { subscription?.data?.subscription?.unsubscribe?.(); } catch { /* ignore */ }
+          resolve(session);
+        };
+
+        const subscription = onAuthStateChange((event, session) => {
+          if (event === 'SIGNED_IN' && session) finish(session);
+        });
+
+        setTimeout(async () => {
+          try {
+            const { data } = await getSession();
+            finish(data?.session || null);
+          } catch {
+            finish(null);
+          }
+        }, 2000);
+      });
+    }
+
+    function renderProfile(profile) {
+      document.title = `${profile.full_name || profile.username || 'Creator'} — MUSE Creator Studio`;
+      document.getElementById('creatorName').textContent = profile.full_name || 'Creator';
+      document.getElementById('creatorUsername').textContent = `@${profile.username || 'creator'}`;
+
+      const bio = profile.bio || 'No bio added yet.';
+      document.getElementById('creatorBio').textContent = bio;
+      document.getElementById('aboutBioFull').textContent = bio;
+
+      const avatar = document.getElementById('creatorAvatar');
+      avatar.src = profile.avatar_url || DEFAULT_AVATAR;
+      avatar.alt = `${profile.full_name || profile.username || 'Creator'} avatar`;
+
+      if (profile.created_at) {
+        document.getElementById('creatorJoinedDate').textContent = formatDate(profile.created_at);
+      }
+
+      const skillsWrap = document.getElementById('creatorSkillsWrap');
+      const aboutSkillsWrap = document.getElementById('aboutSkillsFull');
+      const skills = typeof profile.skills === 'string'
+        ? profile.skills.split(',').map((s) => s.trim()).filter(Boolean)
+        : (Array.isArray(profile.skills) ? profile.skills : []);
+
+      if (skills.length > 0) {
+        const html = skills
+          .map((skill) => `<span class="badge badge-skill">${escapeHtml(skill)}</span>`)
+          .join('');
+        skillsWrap.innerHTML = html;
+        aboutSkillsWrap.innerHTML = html;
+      } else {
+        const empty = '<span class="text-muted">No skills added yet.</span>';
+        skillsWrap.innerHTML = empty;
+        aboutSkillsWrap.innerHTML = empty;
+      }
+
+      const websiteWrap = document.getElementById('creatorWebsiteWrap');
+      if (profile.website) {
+        const link = document.getElementById('creatorWebsite');
+        link.href = profile.website;
+        document.getElementById('creatorWebsiteText').textContent = profile.website.replace(/^https?:\/\//, '');
+        websiteWrap.style.display = 'inline-block';
+      } else {
+        websiteWrap.style.display = 'none';
+      }
+
+      const contactBtn = document.getElementById('contactCreatorBtn');
+      if (profile.email) {
+        contactBtn.href = `mailto:${profile.email}`;
+        contactBtn.style.display = 'inline-flex';
+      } else {
+        contactBtn.style.display = 'none';
+      }
+
+      const isOwner = currentUser && currentUser.id === profile.id;
+      document.getElementById('followBtn').style.display = isOwner ? 'none' : 'inline-flex';
+      document.getElementById('editProfileBtn').style.display = isOwner ? 'inline-flex' : 'none';
+
+      document.getElementById('profileLoading').style.display = 'none';
+      document.getElementById('profileError').style.display = 'none';
+      document.getElementById('profileContainer').style.display = 'block';
+    }
+
+    function updateFollowUI() {
+      const btn = document.getElementById('followBtn');
+      if (!btn) return;
+      if (isFollowing) {
+        btn.textContent = 'Following';
+        btn.classList.add('btn-outline');
+        btn.classList.remove('btn-primary');
+      } else {
+        btn.textContent = 'Follow Creator';
+        btn.classList.add('btn-primary');
+        btn.classList.remove('btn-outline');
+      }
+    }
+
+    async function loadProjectsAndStats(profileId) {
+      const stats = await getProfileStats(profileId);
+      document.getElementById('creatorProjectCount').textContent = stats.projectsCount;
+      document.getElementById('creatorFollowersCount').textContent = stats.followersCount;
+      document.getElementById('creatorFollowingCount').textContent = stats.followingCount;
+      document.getElementById('tabCountCreations').textContent = stats.projectsCount;
+
+      if (currentUser && currentUser.id !== profileId) {
+        const followRes = await isFollowedByUser(currentUser.id, profileId);
+        isFollowing = !!followRes.data;
+        updateFollowUI();
+      }
+
+      const { data: projects, error } = await getUserProjects(profileId, 'published');
+      if (error) console.error('[profile] Projects failed:', error);
+
+      const grid = document.getElementById('creatorProjectsGrid');
+      const empty = document.getElementById('creatorEmptyState');
+
+      if (projects && projects.length > 0) {
+        grid.innerHTML = projects.map((project) => renderProjectCard(project, currentUser)).join('');
+        empty.style.display = 'none';
+      } else {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+      }
+    }
+
+    async function init() {
+      showLoadingState();
+
+      if (!getSupabaseConfig().isConnected) {
+        showProfileError('Supabase is not connected. Add your project URL and anon key in js/supabase.js.', false);
+        return;
+      }
+
+      await waitForSession();
+
+      try {
+        const userRes = await getCurrentUser();
+        currentUser = userRes.data?.user || null;
+      } catch (err) {
+        currentUser = null;
+      }
+
+      if (!targetUserId && !usernameParam) {
+        if (currentUser) {
+          targetUserId = currentUser.id;
+        } else {
+          showProfileError('Sign in to view your profile.', true);
+          return;
+        }
+      }
+
+      let profile = null;
+      let lastError = null;
+
+      try {
+        if (targetUserId && currentUser && currentUser.id === targetUserId) {
+          const res = await ensureCurrentProfile();
+          profile = res.data;
+          lastError = res.error;
+        } else if (targetUserId) {
+          const res = await getProfile(targetUserId);
+          profile = res.data;
+          lastError = res.error;
+        } else if (usernameParam) {
+          const res = await getProfileByUsername(usernameParam);
+          profile = res.data;
+          lastError = res.error;
+          if (profile) targetUserId = profile.id;
+        }
+      } catch (err) {
+        lastError = err;
+      }
+
+      // Freshly confirmed accounts may hit the page a moment before the profile
+      // row is visible. Retry the owner path once.
+      if (!profile && currentUser && (!targetUserId || targetUserId === currentUser.id)) {
+        const res = await ensureCurrentProfile();
+        profile = res.data;
+        lastError = res.error;
+      }
+
+      if (!profile) {
+        console.error('[profile] Could not load profile:', lastError);
+        showProfileError(
+          lastError?.message || 'This profile could not be found. It may have been removed or the link is incorrect.',
+          !currentUser
+        );
+        return;
+      }
+
+      targetUserId = profile.id;
+      renderProfile(profile);
+
+      if (confirmPending) {
+        showToast('Check your email to confirm your account. You can edit your profile once confirmed.', 'info', 6000);
+      }
+
+      loadProjectsAndStats(profile.id).catch((err) => {
+        console.error('[profile] Stats/projects failed:', err);
+      });
+    }
+
+    document.getElementById('profileRetryBtn')?.addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    document.getElementById('followBtn')?.addEventListener('click', async () => {
+      if (!currentUser) {
+        showToast('Please sign in to follow creators.', 'info');
+        return;
+      }
+      if (!targetUserId) return;
+
+      const { following, error } = await toggleFollow(targetUserId);
+      if (error) {
+        showToast(error.message || 'Could not update follow.', 'error');
+        return;
+      }
+
+      isFollowing = following;
+      updateFollowUI();
+
+      const stats = await getProfileStats(targetUserId);
+      document.getElementById('creatorFollowersCount').textContent = stats.followersCount;
+      showToast(following ? 'Following creator!' : 'Unfollowed.', 'info');
+    });
+
+    document.getElementById('shareProfileBtn')?.addEventListener('click', () => {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Profile link copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast(`Profile URL: ${url}`, 'info');
+      });
+    });
+
+    document.querySelectorAll('.portfolio-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.portfolio-tab').forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        const which = tab.dataset.tab;
+        if (which === 'creations') {
+          document.getElementById('tabPanelCreations').style.display = 'block';
+          document.getElementById('tabPanelAbout').style.display = 'none';
+        } else {
+          document.getElementById('tabPanelCreations').style.display = 'none';
+          document.getElementById('tabPanelAbout').style.display = 'block';
+        }
+      });
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>

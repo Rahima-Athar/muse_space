@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saved Projects — MUSE</title>
+  <meta name="description" content="Access your bookmarked inspirations and creative reference library on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="saved-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container section-sm">
+      <div class="page-header-simple">
+        <span class="badge badge-sage">Personal Archive</span>
+        <h1 class="page-title">Saved Inspirations</h1>
+        <p class="page-subtitle">Your private collection of bookmarked creations, case studies, and reference material.</p>
+      </div>
+
+      <!-- Loading State -->
+      <div id="savedLoading" class="loading-state">
+        <div class="spinner-ring"></div>
+        <p>Loading your saved creations...</p>
+      </div>
+
+      <!-- Saved Projects Grid -->
+      <div class="projects-grid" id="savedProjectsGrid" style="display:none;"></div>
+
+      <!-- Empty State -->
+      <div id="savedEmptyState" class="empty-state" style="display:none;">
+        <div class="empty-icon">🔖</div>
+        <h3 class="empty-title">No saved projects yet</h3>
+        <p class="empty-desc">When you find inspiring work on MUSE, click the bookmark icon to save it here for reference.</p>
+        <a href="explore.html" class="btn btn-primary">Explore Projects</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { requireAuth } from './js/auth.js';
+    import { getBookmarkedProjects, toggleBookmark } from './js/interactions.js';
+    import { showToast, confirmDialog } from './js/common.js';
+
+    let savedList = [];
+
+    async function init() {
+      const userRes = await requireAuth('login.html');
+      if (!userRes?.user) return;
+      const user = userRes.user;
+
+      const loading = document.getElementById('savedLoading');
+      const grid = document.getElementById('savedProjectsGrid');
+      const empty = document.getElementById('savedEmptyState');
+
+      const { data, error } = await getBookmarkedProjects(user.id);
+      loading.style.display = 'none';
+
+      savedList = (data || []).map(b => b.projects).filter(Boolean);
+
+      if (savedList.length > 0) {
+        renderSavedGrid();
+      } else {
+        empty.style.display = 'block';
+      }
+    }
+
+    function renderSavedGrid() {
+      const grid = document.getElementById('savedProjectsGrid');
+      const empty = document.getElementById('savedEmptyState');
+
+      if (savedList.length === 0) {
+        grid.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.style.display = 'grid';
+
+      grid.innerHTML = savedList.map(p => {
+        const cover = p.cover_image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80';
+        const creator = p.profiles || {};
+
+        return `
+          <article class="project-card" id="saved-${p.id}">
+            <div class="project-card-media">
+              <a href="project-details.html?id=${p.id}">
+                <img src="${cover}" alt="${p.title}" class="project-card-img" />
+              </a>
+              ${p.category ? `<span class="badge badge-category">${p.category}</span>` : ''}
+              <button class="btn-remove-bookmark" data-id="${p.id}" title="Remove bookmark" aria-label="Remove bookmark">
+                &times;
+              </button>
+            </div>
+
+            <div class="project-card-body">
+              <h3 class="project-card-title">
+                <a href="project-details.html?id=${p.id}">${p.title}</a>
+              </h3>
+              <div class="project-card-footer">
+                <div class="project-creator-link">
+                  <img src="${creator.avatar_url || 'assets/images/default-avatar.svg'}" alt="Avatar" class="project-creator-avatar" />
+                  <span class="project-creator-name">${creator.full_name || creator.username || 'Creator'}</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Wire remove buttons
+      document.querySelectorAll('.btn-remove-bookmark').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const id = btn.dataset.id;
+          const { bookmarked } = await toggleBookmark(id);
+          if (!bookmarked) {
+            savedList = savedList.filter(p => p.id !== id);
+            renderSavedGrid();
+            showToast('Removed from saved inspirations.', 'info');
+          }
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

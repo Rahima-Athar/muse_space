@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8" /></head>
+<body>
+  <iframe id="f" src="about.html" style="width:390px;height:844px;border:0;"></iframe>
+  <pre id="out">pending</pre>
+  <script>
+    setTimeout(() => {
+      const f = document.getElementById('f');
+      const d = f.contentDocument;
+      const w = f.contentWindow;
+      const info = (sel) => {
+        const el = d.querySelector(sel);
+        if (!el) return sel + ': NOT FOUND';
+        const r = el.getBoundingClientRect();
+        const s = w.getComputedStyle(el);
+        return sel + ': display=' + s.display + ' vis=' + s.visibility + ' x=' + Math.round(r.left) + ' w=' + Math.round(r.width) + ' right=' + Math.round(r.right) + ' overflow=' + s.overflow;
+      };
+      const lines = [
+        'viewport: ' + d.documentElement.clientWidth,
+        info('.navbar-inner'),
+        info('.navbar-logo'),
+        info('.nav-links'),
+        info('.nav-actions'),
+        info('.nav-hamburger'),
+        'nav-links clipped by viewport: ' + (d.querySelector('.nav-links').getBoundingClientRect().right > d.documentElement.clientWidth ? 'YES' : 'no')
+      ];
+      document.getElementById('out').textContent = lines.join('\n');
+    }, 3000);
+  </script>
+</body>
+</html>

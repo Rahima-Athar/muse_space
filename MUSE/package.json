@@ -1,0 +1,9 @@
+{
+  "name": "muse",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MUSE — creative social networking platform",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — MUSE</title>
+  <meta name="description" content="Create your creator account on MUSE and join a vibrant creative community." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <a href="index.html" class="auth-logo" aria-label="MUSE Home">
+        <span class="logo-mark">M</span>
+        <span class="logo-text">MUSE</span>
+      </a>
+      <h1 class="auth-title">Create your space</h1>
+      <p class="auth-subtitle">Join thousands of creators sharing their craft and inspiration.</p>
+    </div>
+
+    <!-- Error/Notice box -->
+    <div id="authAlert" class="auth-alert" style="display:none;" role="alert"></div>
+
+    <form id="signupForm" class="auth-form" novalidate>
+      <div class="form-group">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input type="text" id="fullName" name="fullName" class="form-input" placeholder="e.g. Maya Lin" required autocomplete="name" />
+      </div>
+
+      <div class="form-group">
+        <label for="username" class="form-label">Username</label>
+        <div class="input-prefix-wrap">
+          <span class="input-prefix">@</span>
+          <input type="text" id="username" name="username" class="form-input" placeholder="mayalin" required autocomplete="username" />
+        </div>
+        <small class="form-help">Lowercase letters, numbers, or underscores (3-30 chars)</small>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" id="email" name="email" class="form-input" placeholder="maya@example.com" required autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-toggle-wrap">
+          <input type="password" id="password" name="password" class="form-input" placeholder="At least 6 characters" required autocomplete="new-password" />
+          <button type="button" class="btn-toggle-pwd" id="togglePassword" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Re-enter password" required autocomplete="new-password" />
+      </div>
+
+      <div class="form-checkbox-group">
+        <input type="checkbox" id="termsAccepted" name="termsAccepted" class="form-checkbox" required />
+        <label for="termsAccepted" class="checkbox-label">
+          I agree to the <a href="help.html" class="link-inline">Community Guidelines</a> and <a href="terms.html" class="link-inline">Terms of Service</a>
+        </label>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg">
+        <span class="btn-text">Create Account</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a href="login.html" class="auth-link">Sign in here</a></p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { signUp, redirectIfAuthenticated } from './js/auth.js';
+    import { showToast, validateEmail, validatePassword, validateUsername, validateRequired, showFieldError, clearFieldError } from './js/common.js';
+
+    // If already logged in, redirect to feed
+    await redirectIfAuthenticated('feed.html');
+
+    const form = document.getElementById('signupForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const authAlert = document.getElementById('authAlert');
+    const togglePwd = document.getElementById('togglePassword');
+    const pwdInput = document.getElementById('password');
+
+    // Toggle password visibility
+    togglePwd?.addEventListener('click', () => {
+      const type = pwdInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      pwdInput.setAttribute('type', type);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authAlert.style.display = 'none';
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const username = document.getElementById('username').value.trim().toLowerCase();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const termsAccepted = document.getElementById('termsAccepted').checked;
+
+      // Reset errors
+      [document.getElementById('fullName'), document.getElementById('username'), document.getElementById('email'), document.getElementById('password'), document.getElementById('confirmPassword')].forEach(clearFieldError);
+
+      let isValid = true;
+
+      // Validation
+      const nameVal = validateRequired(fullName, 'Full Name');
+      if (!nameVal.valid) {
+        showFieldError(document.getElementById('fullName'), nameVal.message);
+        isValid = false;
+      }
+
+      const userVal = validateUsername(username);
+      if (!userVal.valid) {
+        showFieldError(document.getElementById('username'), userVal.message);
+        isValid = false;
+      }
+
+      const emailVal = validateEmail(email);
+      if (!emailVal.valid) {
+        showFieldError(document.getElementById('email'), emailVal.message);
+        isValid = false;
+      }
+
+      const passVal = validatePassword(password);
+      if (!passVal.valid) {
+        showFieldError(document.getElementById('password'), passVal.message);
+        isValid = false;
+      }
+
+      if (password !== confirmPassword) {
+        showFieldError(document.getElementById('confirmPassword'), 'Passwords do not match.');
+        isValid = false;
+      }
+
+      if (!termsAccepted) {
+        authAlert.textContent = 'Please accept the community guidelines and terms.';
+        authAlert.className = 'auth-alert auth-alert-error';
+        authAlert.style.display = 'block';
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Submit to Supabase Auth
+      submitBtn.disabled = true;
+      submitBtn.classList.add('btn-loading');
+      submitBtn.querySelector('.btn-text').textContent = 'Creating account...';
+
+      const { data, error } = await signUp(email, password, fullName, username);
+
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('btn-loading');
+      submitBtn.querySelector('.btn-text').textContent = 'Create Account';
+
+      if (error) {
+        authAlert.textContent = error.message || 'Signup failed. Please try again.';
+        authAlert.className = 'auth-alert auth-alert-error';
+        authAlert.style.display = 'block';
+      } else {
+        const uid = data?.user?.id || data?.session?.user?.id;
+        const needsConfirmation = !data?.session;
+
+        if (needsConfirmation) {
+          authAlert.textContent = 'Account created! Check your email to confirm your account. Taking you to your profile...';
+          authAlert.className = 'auth-alert auth-alert-success';
+          authAlert.style.display = 'block';
+          showToast('Account created! Confirm your email to unlock editing.', 'success');
+        } else {
+          showToast('Account created successfully! Welcome to MUSE.', 'success');
+        }
+
+        // Take the user straight to their real profile page. The profile row is
+        // created by the database trigger even before email confirmation, and
+        // public profiles are readable, so this works in both cases.
+        setTimeout(() => {
+          const params = new URLSearchParams();
+          if (uid) params.set('id', uid);
+          if (needsConfirmation) params.set('confirm', '1');
+          const qs = params.toString();
+          window.location.href = `profile.html${qs ? `?${qs}` : ''}`;
+        }, needsConfirmation ? 2000 : 1000);
+      }
+    });
+  </script>
+</body>
+</html>

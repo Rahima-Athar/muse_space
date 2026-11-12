@@ -1,0 +1,572 @@
+/* ============================================================
+   MUSE — Responsive Overrides
+   Breakpoints:
+     - Desktop:  > 1024px (base styles)
+     - Tablet:   768px – 1024px
+     - Mobile:   < 768px
+     - Small:    < 480px
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Large Tablet / Small Desktop (≤ 1024px)
+   ------------------------------------------------------------ */
+@media (max-width: 1024px) {
+
+  /* Typography scaling */
+  h1 { font-size: var(--fs-3xl); }
+  h2 { font-size: var(--fs-2xl); }
+  h3 { font-size: var(--fs-xl);  }
+
+  /* Container padding increase */
+  .container {
+    padding: 0 var(--space-lg);
+  }
+
+  /* Grid adjustments */
+  .grid--4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Hero section */
+  .hero {
+    padding: var(--space-3xl) 0;
+  }
+
+  .hero__title {
+    font-size: var(--fs-4xl);
+  }
+
+  /* Footer grid */
+  .footer__grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-xl);
+  }
+
+  .footer__grid > *:first-child {
+    grid-column: span 3;
+    max-width: none;
+    text-align: center;
+  }
+
+  .footer__description {
+    max-width: none;
+    margin: 0 auto var(--space-lg);
+  }
+
+  .footer__social {
+    justify-content: center;
+  }
+
+  /* Navbar — show hamburger, hide desktop nav */
+  .navbar__nav {
+    display: none;
+  }
+
+  .navbar__hamburger {
+    display: flex;
+  }
+
+  /* Section spacing */
+  .section {
+    padding: var(--space-2xl) 0;
+  }
+
+  .section--lg {
+    padding: var(--space-3xl) 0;
+  }
+
+  .section__title {
+    font-size: var(--fs-2xl);
+  }
+}
+
+/* ------------------------------------------------------------
+   Tablet (≤ 768px)
+   ------------------------------------------------------------ */
+@media (max-width: 768px) {
+
+  /* Root font sizing */
+  html {
+    font-size: 15px;
+  }
+
+  /* Typography scaling */
+  h1 { font-size: var(--fs-2xl); }
+  h2 { font-size: var(--fs-xl);  }
+  h3 { font-size: var(--fs-lg);  }
+  h4 { font-size: var(--fs-md);  }
+
+  /* Container */
+  .container {
+    padding: 0 var(--space-md);
+  }
+
+  /* Grid adjustments */
+  .grid--3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Navbar */
+  .navbar__inner {
+    padding: 0 var(--space-md);
+  }
+
+  .navbar__actions .btn {
+    display: none;
+  }
+
+  .navbar__actions .navbar__notification,
+  .navbar__actions .navbar__avatar {
+    display: flex;
+  }
+
+  /* Hero */
+  .hero {
+    padding: var(--space-2xl) 0;
+  }
+
+  .hero__title {
+    font-size: var(--fs-3xl);
+  }
+
+  .hero__description {
+    font-size: var(--fs-base);
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero__actions .btn {
+    width: 100%;
+  }
+
+  .hero__stats {
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero__stat-value {
+    font-size: var(--fs-xl);
+  }
+
+  /* Card grids — stack or 2-col */
+  .grid--auto-fill,
+  .grid--auto-fit {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  /* Section headers */
+  .section__header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .section__subtitle {
+    font-size: var(--fs-sm);
+  }
+
+  /* Footer */
+  .footer {
+    padding: var(--space-2xl) 0 var(--space-lg);
+  }
+
+  .footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+  }
+
+  .footer__grid > *:first-child {
+    grid-column: span 2;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-sm);
+  }
+
+  .footer__bottom-links {
+    justify-content: center;
+  }
+
+  /* Modals */
+  .modal {
+    max-width: 95%;
+    margin: var(--space-md);
+  }
+
+  .modal__header {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .modal__body {
+    padding: var(--space-lg);
+  }
+
+  .modal__footer {
+    padding: var(--space-md) var(--space-lg);
+    flex-direction: column;
+  }
+
+  .modal__footer .btn {
+    width: 100%;
+  }
+
+  /* Tabs — horizontal scroll */
+  .tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Toast container */
+  .toast-container {
+    left: var(--space-md);
+    right: var(--space-md);
+    bottom: var(--space-md);
+  }
+
+  .toast {
+    min-width: auto;
+    max-width: none;
+  }
+
+  /* Buttons — slightly bigger touch targets */
+  .btn {
+    padding: 0.8em 1.6em;
+  }
+
+  .btn--sm {
+    padding: 0.6em 1.2em;
+  }
+
+  /* Hide desktop-only elements */
+  .hide-tablet,
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   Mobile (≤ 480px)
+   ------------------------------------------------------------ */
+@media (max-width: 480px) {
+
+  /* Root font sizing */
+  html {
+    font-size: 14px;
+  }
+
+  /* Typography */
+  h1 { font-size: var(--fs-xl);  }
+  h2 { font-size: var(--fs-lg);  }
+  h3 { font-size: var(--fs-md);  }
+
+  /* Container */
+  .container {
+    padding: 0 var(--space-sm);
+  }
+
+  /* Grids collapse to single column */
+  .grid--2,
+  .grid--3,
+  .grid--4 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid--auto-fill,
+  .grid--auto-fit {
+    grid-template-columns: 1fr;
+  }
+
+  /* Navbar */
+  .navbar {
+    height: 60px;
+  }
+
+  .navbar__brand-text {
+    font-size: var(--fs-lg);
+  }
+
+  .navbar__brand-icon {
+    width: 32px;
+    height: 32px;
+    font-size: var(--fs-base);
+  }
+
+  /* Adjust main content for smaller navbar */
+  .main-content {
+    padding-top: 60px;
+  }
+
+  /* Hero */
+  .hero {
+    padding: var(--space-xl) 0;
+  }
+
+  .hero__tag {
+    font-size: var(--fs-xs);
+    padding: var(--space-2xs) var(--space-sm);
+  }
+
+  .hero__title {
+    font-size: var(--fs-2xl);
+  }
+
+  .hero__description {
+    font-size: var(--fs-sm);
+  }
+
+  .hero__stats {
+    gap: var(--space-md);
+  }
+
+  /* Project cards */
+  .project-card__body {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .project-card__footer {
+    padding: var(--space-xs) var(--space-md) var(--space-sm);
+  }
+
+  .project-card__title {
+    font-size: var(--fs-base);
+  }
+
+  /* Creator cards */
+  .creator-card {
+    padding: var(--space-lg);
+  }
+
+  .creator-card__avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .creator-card__stats {
+    gap: var(--space-md);
+  }
+
+  /* Buttons — full width on very small screens */
+  .btn--mobile-block {
+    display: flex;
+    width: 100%;
+  }
+
+  /* Footer */
+  .footer__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    text-align: center;
+  }
+
+  .footer__grid > *:first-child {
+    grid-column: span 1;
+  }
+
+  .footer__links {
+    align-items: center;
+  }
+
+  .footer__social {
+    justify-content: center;
+  }
+
+  /* Card base */
+  .card__body {
+    padding: var(--space-md);
+  }
+
+  .card__footer {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  /* Section spacing */
+  .section {
+    padding: var(--space-xl) 0;
+  }
+
+  .section--lg {
+    padding: var(--space-2xl) 0;
+  }
+
+  /* Mobile menu adjustments */
+  .navbar__mobile-link {
+    padding: var(--space-md);
+    font-size: var(--fs-base);
+  }
+
+  /* Alerts */
+  .alert {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--fs-xs);
+  }
+
+  /* Avatar stack */
+  .avatar-stack__item {
+    width: 28px;
+    height: 28px;
+  }
+
+  .avatar-stack__more {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+
+  /* Pagination */
+  .pagination__btn {
+    width: 32px;
+    height: 32px;
+    font-size: var(--fs-xs);
+  }
+
+  /* Hide mobile-hidden elements */
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   Print Styles
+   ------------------------------------------------------------ */
+@media print {
+  /* Remove decorative elements */
+  .navbar,
+  .footer,
+  .sidebar,
+  .toast-container,
+  .modal-overlay,
+  .navbar__hamburger,
+  .btn,
+  .skip-link {
+    display: none !important;
+  }
+
+  /* Reset backgrounds */
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+  }
+
+  /* Reset main content padding */
+  .main-content {
+    padding-top: 0;
+  }
+
+  /* Ensure links show URLs */
+  a[href]::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Avoid page breaks inside cards */
+  .card,
+  .project-card,
+  .creator-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* ------------------------------------------------------------
+   Landscape Orientation Adjustments
+   ------------------------------------------------------------ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    padding: var(--space-xl) 0;
+  }
+
+  .hero__title {
+    font-size: var(--fs-2xl);
+  }
+
+  .hero__stats {
+    margin-top: var(--space-lg);
+  }
+
+  .navbar {
+    height: 56px;
+  }
+
+  .main-content {
+    padding-top: 56px;
+  }
+}
+
+/* ------------------------------------------------------------
+   High-DPI / Retina Adjustments
+   ------------------------------------------------------------ */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Thinner borders on high-DPI displays */
+  .card,
+  .project-card,
+  .creator-card,
+  .form-input,
+  .form-select,
+  .form-textarea {
+    border-width: 0.5px;
+  }
+}
+
+/* ------------------------------------------------------------
+   Touch Device Optimizations
+   ------------------------------------------------------------ */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .card:hover,
+  .project-card:hover,
+  .creator-card:hover {
+    transform: none;
+    box-shadow: var(--shadow-card);
+  }
+
+  .project-card:hover .project-card__image {
+    transform: none;
+  }
+
+  .btn:hover {
+    transform: none;
+  }
+
+  /* Larger touch targets */
+  .navbar__link {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .sidebar__link {
+    padding: var(--space-md);
+  }
+
+  .tab {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .dropdown__item {
+    padding: var(--space-md);
+  }
+
+  /* Ensure minimum touch target size (44x44) */
+  .navbar__notification,
+  .navbar__hamburger,
+  .modal__close,
+  .lightbox__close,
+  .lightbox__nav {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <rect x="5" y="8" width="44" height="44" rx="12" fill="#B65F3C"/>
+  <text x="27" y="38" font-family="'Playfair Display', Georgia, serif" font-size="28" font-weight="700" fill="#F3E8D0" text-anchor="middle">M</text>
+  <text x="60" y="40" font-family="'Playfair Display', Georgia, serif" font-size="30" font-weight="700" fill="#173D2B" letter-spacing="3">MUSE</text>
+</svg>

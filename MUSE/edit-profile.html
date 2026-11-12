@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Profile — MUSE</title>
+  <meta name="description" content="Update your creator profile and personal brand on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="edit-profile-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container section-sm">
+      <div class="edit-profile-layout">
+        <div class="page-header-simple">
+          <span class="badge badge-sage">Account Identity</span>
+          <h1 class="page-title">Edit Creator Profile</h1>
+          <p class="page-subtitle">Customize how other creators, collaborators, and clients see your portfolio.</p>
+        </div>
+
+        <form id="profileForm" class="edit-profile-form card" novalidate>
+          <!-- Avatar Section -->
+          <div class="avatar-edit-section">
+            <div class="avatar-preview-wrap">
+              <img id="avatarPreview" src="assets/images/default-avatar.svg" alt="Avatar Preview" class="avatar-large" />
+            </div>
+            <div class="avatar-controls">
+              <h3 class="form-section-title">Profile Picture</h3>
+              <p class="form-help">Upload a square photo (JPG or PNG, max 2MB). We'll crop it circular.</p>
+              <div class="avatar-btn-row">
+                <input type="file" id="avatarFileInput" accept="image/*" class="sr-only" />
+                <button type="button" id="uploadAvatarBtn" class="btn btn-outline btn-sm">Upload New Photo</button>
+              </div>
+              <div class="form-group mt-2">
+                <label for="avatarUrlInput" class="form-label-sm">Or public image URL:</label>
+                <input type="url" id="avatarUrlInput" class="form-input form-input-sm" placeholder="https://example.com/avatar.jpg" />
+              </div>
+            </div>
+          </div>
+
+          <hr class="form-divider" />
+
+          <!-- Form Fields -->
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="fullName" class="form-label">Full Name <span class="required">*</span></label>
+              <input type="text" id="fullName" name="fullName" class="form-input" required />
+            </div>
+
+            <div class="form-group">
+              <label for="username" class="form-label">Username</label>
+              <div class="input-prefix-wrap">
+                <span class="input-prefix">@</span>
+                <input type="text" id="username" name="username" class="form-input" disabled title="Username cannot be changed once registered" />
+              </div>
+              <small class="form-help">Username is unique to your profile URL.</small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bio" class="form-label">Bio / Artist Statement</label>
+            <textarea id="bio" name="bio" rows="4" class="form-textarea" placeholder="Tell the community who you are, what mediums you work with, and what inspires you..."></textarea>
+            <small class="form-help">Up to 280 characters.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="skills" class="form-label">Skills & Mediums</label>
+            <input type="text" id="skills" name="skills" class="form-input" placeholder="e.g. UI Design, Three.js, Cinema4D, Risograph, Editorial" />
+            <small class="form-help">Separate each skill with a comma.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="website" class="form-label">Personal Website / Portfolio Link</label>
+            <input type="url" id="website" name="website" class="form-input" placeholder="https://yourportfolio.com" />
+          </div>
+
+          <div class="form-actions-row">
+            <a href="portfolio.html" class="btn btn-outline">Cancel</a>
+            <button type="submit" id="saveProfileBtn" class="btn btn-primary btn-lg">Save Profile Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { requireAuth, getCurrentProfile } from './js/auth.js';
+    import { updateProfile, uploadAvatar } from './js/profile.js';
+    import { showToast, validateRequired, showFieldError, clearFieldError } from './js/common.js';
+
+    const userRes = await requireAuth('login.html');
+    const currentUser = userRes?.user;
+
+    const form = document.getElementById('profileForm');
+    const fullNameInput = document.getElementById('fullName');
+    const usernameInput = document.getElementById('username');
+    const bioInput = document.getElementById('bio');
+    const skillsInput = document.getElementById('skills');
+    const websiteInput = document.getElementById('website');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarFileInput = document.getElementById('avatarFileInput');
+    const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+    const avatarUrlInput = document.getElementById('avatarUrlInput');
+    const saveBtn = document.getElementById('saveProfileBtn');
+
+    let selectedAvatarFile = null;
+    let currentAvatarUrl = null;
+
+    async function loadData() {
+      const { data: profile, error } = await getCurrentProfile();
+      if (error) throw error;
+      if (!profile) throw new Error('Profile not found.');
+
+      fullNameInput.value = profile.full_name || '';
+      usernameInput.value = profile.username || '';
+      bioInput.value = profile.bio || '';
+      skillsInput.value = profile.skills || '';
+      websiteInput.value = profile.website || '';
+      if (profile.avatar_url) {
+        avatarPreview.src = profile.avatar_url;
+        currentAvatarUrl = profile.avatar_url;
+      }
+    }
+
+    uploadAvatarBtn.addEventListener('click', () => avatarFileInput.click());
+
+    avatarFileInput.addEventListener('change', () => {
+      const file = avatarFileInput.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select an image file', 'error');
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        showToast('Image size exceeds 2MB limit', 'error');
+        return;
+      }
+      selectedAvatarFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => avatarPreview.src = e.target.result;
+      reader.readAsDataURL(file);
+    });
+
+    avatarUrlInput.addEventListener('input', () => {
+      const url = avatarUrlInput.value.trim();
+      if (url) {
+        avatarPreview.src = url;
+        currentAvatarUrl = url;
+        selectedAvatarFile = null;
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearFieldError(fullNameInput);
+
+      const fullName = fullNameInput.value.trim();
+      const bio = bioInput.value.trim();
+      const skills = skillsInput.value.trim();
+      const website = websiteInput.value.trim();
+
+      const nameVal = validateRequired(fullName, 'Full Name');
+      if (!nameVal.valid) {
+        showFieldError(fullNameInput, nameVal.message);
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving changes...';
+
+      try {
+        let avatar_url = currentAvatarUrl;
+
+        // If file uploaded, store in Supabase Storage bucket muse-avatars
+        if (selectedAvatarFile) {
+          const { url, error: uploadErr } = await uploadAvatar(selectedAvatarFile, currentUser.id);
+          if (!uploadErr && url) {
+            avatar_url = url;
+          }
+        }
+
+        const { data, error } = await updateProfile({
+          full_name: fullName,
+          bio,
+          skills,
+          website: website || null,
+          avatar_url
+        });
+
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Profile Changes';
+
+        if (error) {
+          showToast(error.message || 'Error updating profile.', 'error');
+        } else {
+          showToast('Profile updated successfully!', 'success');
+          setTimeout(() => {
+            window.location.href = `profile.html?id=${currentUser.id}`;
+          }, 1000);
+        }
+      } catch (err) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Profile Changes';
+        showToast(err.message || 'Failed to save profile.', 'error');
+      }
+    });
+
+    // Load immediately instead of waiting for DOMContentLoaded — that event
+    // may already have fired while requireAuth() was awaiting the session,
+    // which left the form blank and prevented profile updates from saving.
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Loading profile...';
+    try {
+      await loadData();
+    } catch (err) {
+      console.error('[edit-profile] Failed to load profile:', err);
+      showToast(err.message || 'Could not load your profile. Please refresh and try again.', 'error');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Profile Changes';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Details — MUSE</title>
+  <meta name="description" content="Explore project details, process, tools, and creator conversation on MUSE." />
+  
+  <!-- CSS -->
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/projects.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="project-details-page">
+  <!-- Shared Navbar -->
+  <nav id="navbar" class="navbar" role="navigation" aria-label="Main Navigation"></nav>
+
+  <main class="main-content">
+    <div class="container section-sm">
+      <!-- Loading overlay/state -->
+      <div id="projectLoading" class="loading-state">
+        <div class="spinner-ring"></div>
+        <p>Opening project archive...</p>
+      </div>
+
+      <!-- Main Project Article (Hidden until loaded) -->
+      <article id="projectContainer" class="project-details-layout" style="display:none;">
+        <!-- Left / Center: Project Media & Content -->
+        <div class="project-main-col">
+          <!-- Project Header Mobile / Tablet -->
+          <div class="project-header-top">
+            <div class="project-meta-badges">
+              <span id="projectCategory" class="badge badge-category">Category</span>
+              <span id="projectDraftBadge" class="badge badge-terracotta" style="display:none;">Draft</span>
+            </div>
+            <h1 id="projectTitle" class="project-view-title">Project Title</h1>
+            <p id="projectDate" class="project-view-date">Published on Nov 8, 2026</p>
+          </div>
+
+          <!-- Cover Image Container -->
+          <div class="project-cover-wrap">
+            <img id="projectCoverImg" src="" alt="Project Cover" class="project-cover-img" />
+          </div>
+
+          <!-- Project Gallery (if extra images exist) -->
+          <div id="projectGallery" class="project-gallery-grid" style="display:none;">
+            <!-- Extra images appended here -->
+          </div>
+
+          <!-- Project Description / Case Study -->
+          <div class="project-article-body">
+            <h2 class="section-title-sm">About the Project</h2>
+            <div id="projectDescription" class="project-rich-text">
+              <!-- Content -->
+            </div>
+
+            <!-- Tools used tags -->
+            <div id="toolsSection" class="project-tools-wrap" style="display:none;">
+              <h3 class="tools-heading">Tools & Technologies:</h3>
+              <div id="projectTools" class="tools-tag-list"></div>
+            </div>
+
+            <!-- External link if available -->
+            <div id="externalUrlWrap" class="project-external-link-wrap" style="display:none;">
+              <a id="projectExternalUrl" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                View Live Project
+              </a>
+            </div>
+          </div>
+
+          <!-- Community Interaction Bar -->
+          <div class="project-interactions-bar">
+            <div class="interaction-buttons">
+              <button id="likeBtn" class="btn btn-outline btn-like" aria-label="Appreciate project">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                <span id="likeCount">0</span> Appreciations
+              </button>
+
+              <button id="bookmarkBtn" class="btn btn-outline btn-bookmark" aria-label="Save project">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span id="bookmarkLabel">Save</span>
+              </button>
+            </div>
+
+            <!-- Owner Action Buttons (Edit / Delete) -->
+            <div id="ownerActions" class="owner-actions-wrap" style="display:none;">
+              <a id="editProjectBtn" href="#" class="btn btn-outline btn-sm">Edit</a>
+              <button id="deleteProjectBtn" class="btn btn-danger btn-sm">Delete</button>
+            </div>
+          </div>
+
+          <!-- Comments Section -->
+          <section class="comments-section" id="commentsSection">
+            <h2 class="section-title-sm">Discussion & Feedback (<span id="commentsCount">0</span>)</h2>
+
+            <!-- Add Comment Form -->
+            <div class="comment-form-wrap">
+              <div id="commentNotice" class="comment-guest-notice" style="display:none;">
+                <p><a href="login.html" class="link-inline">Sign in</a> to leave constructive feedback on this project.</p>
+              </div>
+
+              <form id="commentForm" class="comment-form">
+                <div class="form-group">
+                  <label for="commentInput" class="sr-only">Leave a comment</label>
+                  <textarea id="commentInput" rows="3" class="form-textarea" placeholder="Share thoughtful feedback, questions, or appreciation..." required></textarea>
+                </div>
+                <div class="comment-form-footer">
+                  <button type="submit" id="submitCommentBtn" class="btn btn-primary btn-sm">Post Comment</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Comments List -->
+            <div class="comments-list" id="commentsList">
+              <!-- Comments will render here -->
+            </div>
+          </section>
+        </div>
+
+        <!-- Right: Creator Card Sidebar -->
+        <aside class="project-side-col">
+          <div class="card creator-sticky-card">
+            <div class="creator-card-header text-center">
+              <a id="creatorAvatarLink" href="#">
+                <img id="creatorAvatar" src="assets/images/default-avatar.svg" alt="Creator Avatar" class="creator-large-avatar" />
+              </a>
+              <h3 class="creator-card-name">
+                <a id="creatorNameLink" href="#">Creator Name</a>
+              </h3>
+              <p id="creatorUsername" class="creator-card-handle">@username</p>
+            </div>
+
+            <div class="creator-card-body">
+              <p id="creatorBio" class="creator-card-bio">Creative mind sharing work on MUSE.</p>
+              
+              <div id="creatorWebsiteWrap" style="display:none;">
+                <a id="creatorWebsite" href="#" target="_blank" rel="noopener noreferrer" class="creator-website-link">
+                  🌐 Visit Website
+                </a>
+              </div>
+
+              <div class="creator-actions">
+                <button id="followCreatorBtn" class="btn btn-primary btn-block">Follow</button>
+                <a id="creatorProfileLink" href="#" class="btn btn-outline btn-block">View Full Portfolio</a>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </article>
+
+      <!-- Not found error state -->
+      <div id="projectNotFound" class="empty-state" style="display:none;">
+        <div class="empty-icon">📁</div>
+        <h3 class="empty-title">Project Not Found</h3>
+        <p class="empty-desc">The project you are looking for does not exist or may have been removed by its creator.</p>
+        <a href="explore.html" class="btn btn-primary">Browse Other Work</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="footer" class="footer" role="contentinfo"></footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/common.js"></script>
+  <script type="module">
+    import { getProjectById, deleteProject } from './js/projects.js';
+    import { getCurrentUser } from './js/auth.js';
+    import { toggleLike, toggleBookmark, isLikedByUser, isBookmarkedByUser, addComment, deleteComment, toggleFollow, isFollowedByUser } from './js/interactions.js';
+    import { showToast, formatDate, timeAgo, confirmDialog } from './js/common.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('id');
+
+    const loading = document.getElementById('projectLoading');
+    const container = document.getElementById('projectContainer');
+    const notFound = document.getElementById('projectNotFound');
+
+    let currentProject = null;
+    let currentUser = null;
+    let isLiked = false;
+    let isBookmarked = false;
+    let isFollowing = false;
+
+    async function init() {
+      if (!projectId) {
+        showNotFound();
+        return;
+      }
+
+      // Check current user
+      const userRes = await getCurrentUser();
+      currentUser = userRes.data?.user || null;
+
+      // Handle fallback demo projects if opened without Supabase data
+      if (projectId.startsWith('demo')) {
+        renderDemoProject(projectId);
+        return;
+      }
+
+      const { data: project, error } = await getProjectById(projectId);
+
+      if (error || !project) {
+        showNotFound();
+        return;
+      }
+
+      currentProject = project;
+      renderProject(project);
+
+      // Check user interaction states
+      if (currentUser) {
+        const likeRes = await isLikedByUser(projectId);
+        isLiked = Boolean(likeRes?.data !== undefined ? likeRes.data : likeRes);
+
+        const bookmarkRes = await isBookmarkedByUser(projectId);
+        isBookmarked = Boolean(bookmarkRes?.data !== undefined ? bookmarkRes.data : bookmarkRes);
+
+        const followRes = await isFollowedByUser(project.user_id);
+        isFollowing = Boolean(followRes?.data !== undefined ? followRes.data : followRes);
+
+        updateInteractionUI();
+      } else {
+        document.getElementById('commentNotice').style.display = 'block';
+        document.getElementById('commentForm').style.display = 'none';
+      }
+    }
+
+    function showNotFound() {
+      loading.style.display = 'none';
+      container.style.display = 'none';
+      notFound.style.display = 'block';
+    }
+
+    function renderProject(p) {
+      document.title = `${p.title} — MUSE`;
+
+      document.getElementById('projectTitle').textContent = p.title;
+      document.getElementById('projectCategory').textContent = p.category || 'General';
+      document.getElementById('projectDate').textContent = `Published on ${formatDate(p.created_at)}`;
+
+      if (p.status === 'draft') {
+        document.getElementById('projectDraftBadge').style.display = 'inline-block';
+      }
+
+      const coverImg = document.getElementById('projectCoverImg');
+      coverImg.src = p.cover_image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80';
+      coverImg.alt = p.title;
+
+      // Gallery
+      if (p.project_images && p.project_images.length > 0) {
+        const gallery = document.getElementById('projectGallery');
+        gallery.innerHTML = p.project_images
+          .sort((a, b) => a.display_order - b.display_order)
+          .map(img => `<img src="${img.image_url}" alt="Gallery item" class="gallery-img" loading="lazy" />`)
+          .join('');
+        gallery.style.display = 'grid';
+      }
+
+      // Description
+      document.getElementById('projectDescription').innerHTML = p.description ? p.description.replace(/\n/g, '<br />') : '<em>No detailed description provided.</em>';
+
+      // Tools
+      if (p.tools) {
+        const toolsWrap = document.getElementById('toolsSection');
+        const toolsList = document.getElementById('projectTools');
+        const tools = p.tools.split(',').map(t => t.trim());
+        toolsList.innerHTML = tools.map(t => `<span class="badge badge-skill">${t}</span>`).join('');
+        toolsWrap.style.display = 'block';
+      }
+
+      // External link
+      if (p.external_url) {
+        const urlWrap = document.getElementById('externalUrlWrap');
+        const urlBtn = document.getElementById('projectExternalUrl');
+        urlBtn.href = p.external_url;
+        urlWrap.style.display = 'block';
+      }
+
+      // Stats
+      const likesCount = p.likes ? p.likes.length : 0;
+      document.getElementById('likeCount').textContent = likesCount;
+
+      // Creator details
+      const creator = p.profiles || {};
+      const creatorAvatar = creator.avatar_url || 'assets/images/default-avatar.svg';
+      const creatorName = creator.full_name || creator.username || 'Creator';
+      const creatorUsername = creator.username || 'creator';
+
+      document.getElementById('creatorAvatar').src = creatorAvatar;
+      document.getElementById('creatorAvatarLink').href = `profile.html?id=${p.user_id}`;
+      document.getElementById('creatorNameLink').textContent = creatorName;
+      document.getElementById('creatorNameLink').href = `profile.html?id=${p.user_id}`;
+      document.getElementById('creatorUsername').textContent = `@${creatorUsername}`;
+      document.getElementById('creatorBio').textContent = creator.bio || 'Independent creative sharing work on MUSE.';
+      document.getElementById('creatorProfileLink').href = `profile.html?id=${p.user_id}`;
+
+      if (creator.website) {
+        const webWrap = document.getElementById('creatorWebsiteWrap');
+        const webLink = document.getElementById('creatorWebsite');
+        webLink.href = creator.website;
+        webWrap.style.display = 'block';
+      }
+
+      // Check owner actions
+      if (currentUser && currentUser.id === p.user_id) {
+        const ownerActions = document.getElementById('ownerActions');
+        ownerActions.style.display = 'flex';
+        document.getElementById('editProjectBtn').href = `create-project.html?edit=${p.id}`;
+        document.getElementById('followCreatorBtn').style.display = 'none'; // Can't follow self
+      }
+
+      // Render comments
+      renderComments(p.comments || []);
+
+      loading.style.display = 'none';
+      container.style.display = 'grid';
+    }
+
+    function renderComments(comments) {
+      document.getElementById('commentsCount').textContent = comments.length;
+      const list = document.getElementById('commentsList');
+
+      if (comments.length === 0) {
+        list.innerHTML = `<p class="text-muted">No comments yet. Start the conversation!</p>`;
+        return;
+      }
+
+      list.innerHTML = comments
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .map(c => {
+          const author = c.profiles || {};
+          const isOwn = currentUser && currentUser.id === c.user_id;
+
+          return `
+            <div class="comment-item" id="comment-${c.id}">
+              <img src="${author.avatar_url || 'assets/images/default-avatar.svg'}" alt="${author.full_name || 'User'}" class="comment-avatar" />
+              <div class="comment-content">
+                <div class="comment-header">
+                  <span class="comment-author">${author.full_name || author.username || 'User'}</span>
+                  <span class="comment-time">${timeAgo(c.created_at)}</span>
+                  ${isOwn ? `
+                    <button class="btn-text-danger btn-delete-comment" data-comment-id="${c.id}">Delete</button>
+                  ` : ''}
+                </div>
+                <p class="comment-body">${escapeHtml(c.content)}</p>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      // Wire delete comment buttons
+      document.querySelectorAll('.btn-delete-comment').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const cId = btn.dataset.commentId;
+          const confirmed = await confirmDialog('Are you sure you want to delete this comment?', { variant: 'danger' });
+          if (confirmed) {
+            const { error } = await deleteComment(cId);
+            if (!error) {
+              document.getElementById(`comment-${cId}`)?.remove();
+              showToast('Comment deleted', 'info');
+            }
+          }
+        });
+      });
+    }
+
+    function updateInteractionUI() {
+      const likeBtn = document.getElementById('likeBtn');
+      const bookmarkBtn = document.getElementById('bookmarkBtn');
+      const followBtn = document.getElementById('followCreatorBtn');
+
+      if (isLiked) {
+        likeBtn.classList.add('active');
+      } else {
+        likeBtn.classList.remove('active');
+      }
+
+      if (isBookmarked) {
+        bookmarkBtn.classList.add('active');
+        document.getElementById('bookmarkLabel').textContent = 'Saved';
+      } else {
+        bookmarkBtn.classList.remove('active');
+        document.getElementById('bookmarkLabel').textContent = 'Save';
+      }
+
+      if (isFollowing) {
+        followBtn.textContent = 'Following';
+        followBtn.classList.add('btn-outline');
+        followBtn.classList.remove('btn-primary');
+      } else {
+        followBtn.textContent = 'Follow';
+        followBtn.classList.add('btn-primary');
+        followBtn.classList.remove('btn-outline');
+      }
+    }
+
+    // Like Button Handler
+    document.getElementById('likeBtn')?.addEventListener('click', async () => {
+      if (!currentUser) {
+        showToast('Please log in to like this project.', 'info');
+        return;
+      }
+      const { liked, count } = await toggleLike(projectId);
+      isLiked = liked;
+      document.getElementById('likeCount').textContent = count;
+      updateInteractionUI();
+    });
+
+    // Bookmark Button Handler
+    document.getElementById('bookmarkBtn')?.addEventListener('click', async () => {
+      if (!currentUser) {
+        showToast('Please log in to bookmark projects.', 'info');
+        return;
+      }
+      const { bookmarked } = await toggleBookmark(projectId);
+      isBookmarked = bookmarked;
+      updateInteractionUI();
+      showToast(bookmarked ? 'Project saved to your collection!' : 'Project removed from saved.', 'success');
+    });
+
+    // Follow Creator Handler
+    document.getElementById('followCreatorBtn')?.addEventListener('click', async () => {
+      if (!currentUser) {
+        showToast('Please log in to follow creators.', 'info');
+        return;
+      }
+      if (currentUser.id === currentProject?.user_id) {
+        showToast("You can't follow yourself.", 'warning');
+        return;
+      }
+      const { following } = await toggleFollow(currentProject.user_id);
+      isFollowing = following;
+      updateInteractionUI();
+      showToast(following ? 'You are now following this creator!' : 'Unfollowed creator.', 'info');
+    });
+
+    // Comment Form Handler
+    document.getElementById('commentForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('commentInput');
+      const content = input.value.trim();
+      if (!content) return;
+
+      const submitBtn = document.getElementById('submitCommentBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Posting...';
+
+      const { data, error } = await addComment(projectId, content);
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Post Comment';
+
+      if (error) {
+        showToast(error.message || 'Could not post comment.', 'error');
+      } else {
+        input.value = '';
+        showToast('Comment added!', 'success');
+        // Refresh project comments
+        const fresh = await getProjectById(projectId);
+        if (fresh.data) renderComments(fresh.data.comments || []);
+      }
+    });
+
+    // Delete Project Handler
+    document.getElementById('deleteProjectBtn')?.addEventListener('click', async () => {
+      const confirmed = await confirmDialog('Are you sure you want to permanently delete this project? This cannot be undone.', {
+        title: 'Delete Project',
+        confirmText: 'Delete',
+        variant: 'danger'
+      });
+      if (confirmed) {
+        const { error } = await deleteProject(projectId);
+        if (error) {
+          showToast(error.message || 'Could not delete project.', 'error');
+        } else {
+          showToast('Project deleted successfully.', 'success');
+          window.location.href = 'portfolio.html';
+        }
+      }
+    });
+
+    function renderDemoProject(id) {
+      renderProject({
+        id,
+        title: 'Harmonics: Kinetic Typography Series',
+        category: 'Graphic Design',
+        cover_image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80',
+        description: 'An exploration into fluid motion, dynamic layout grids, and editorial rhythm. Designed to evoke organic forms in modern typographic systems.',
+        tools: 'Glyphs, After Effects, Figma',
+        external_url: 'https://example.com',
+        created_at: new Date().toISOString(),
+        likes: [{ id: 1 }, { id: 2 }],
+        comments: [],
+        profiles: {
+          full_name: 'Elena Rostova',
+          username: 'elenarostova',
+          bio: 'Type designer & art director living in Berlin.',
+          avatar_url: 'assets/images/default-avatar.svg'
+        }
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
