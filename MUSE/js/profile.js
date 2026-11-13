@@ -15,6 +15,19 @@ function _isDemo() {
   return !getSupabaseConfig().isConnected;
 }
 
+const ALLOWED_PROFILE_FIELDS = ['full_name', 'bio', 'skills', 'website', 'avatar_url'];
+
+const PUBLIC_PROFILE_COLUMNS = 'id, username, full_name, bio, skills, website, avatar_url, created_at, updated_at';
+
+function _pickProfileFields(data) {
+  const picked = {};
+  if (!data || typeof data !== 'object') return picked;
+  for (const key of ALLOWED_PROFILE_FIELDS) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) picked[key] = data[key];
+  }
+  return picked;
+}
+
 /**
  * Fetch full profile details by user ID.
  *
@@ -30,7 +43,7 @@ export async function getProfile(userId) {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select(PUBLIC_PROFILE_COLUMNS)
       .eq('id', userId)
       .maybeSingle();
 
@@ -56,7 +69,7 @@ export async function getProfileByUsername(username) {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select(PUBLIC_PROFILE_COLUMNS)
       .eq('username', username)
       .maybeSingle();
 
@@ -121,8 +134,13 @@ export async function updateProfile(profileData) {
     const { data: userRes } = await getCurrentUser();
     if (!userRes?.user) throw new Error('Not authenticated.');
 
+    const safeData = _pickProfileFields(profileData);
+    if (Object.keys(safeData).length === 0) {
+      throw new Error('No valid profile fields to update.');
+    }
+
     if (_isDemo()) {
-      return { data: saveDemoProfile(profileData), error: null };
+      return { data: saveDemoProfile(safeData), error: null };
     }
 
     const userId = userRes.user.id;
@@ -135,7 +153,7 @@ export async function updateProfile(profileData) {
     }
 
     const updates = {
-      ...profileData,
+      ...safeData,
       updated_at: new Date().toISOString()
     };
 

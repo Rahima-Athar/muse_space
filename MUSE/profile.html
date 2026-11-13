@@ -106,9 +106,6 @@
                 <button id="shareProfileBtn" class="btn btn-outline btn-sm" title="Copy profile URL">
                   🔗 Share
                 </button>
-                <a id="contactCreatorBtn" href="mailto:creator@example.com" class="btn btn-outline btn-sm" title="Contact Creator" style="display:none;">
-                  ✉️ Contact
-                </a>
               </div>
             </div>
           </div>
@@ -283,14 +280,6 @@
         websiteWrap.style.display = 'none';
       }
 
-      const contactBtn = document.getElementById('contactCreatorBtn');
-      if (profile.email) {
-        contactBtn.href = `mailto:${profile.email}`;
-        contactBtn.style.display = 'inline-flex';
-      } else {
-        contactBtn.style.display = 'none';
-      }
-
       const isOwner = currentUser && currentUser.id === profile.id;
       document.getElementById('followBtn').style.display = isOwner ? 'none' : 'inline-flex';
       document.getElementById('editProfileBtn').style.display = isOwner ? 'inline-flex' : 'none';
@@ -363,7 +352,7 @@
         if (currentUser) {
           targetUserId = currentUser.id;
         } else {
-          showProfileError('Sign in to view your profile.', true);
+          showProfileError(`Sign in to view your profile. For security, login sessions only work on the same address — open the app from start.bat at http://localhost:5500 (current address: ${window.location.origin}).`, true);
           return;
         }
       }

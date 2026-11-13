@@ -206,9 +206,9 @@ export function renderNotificationItem(notification) {
 
     // Navigate based on type
     if (type === 'follow' && actor?.id) {
-      window.location.href = `../pages/profile.html?id=${actor.id}`;
+      window.location.href = `profile.html?id=${actor.id}`;
     } else if (reference_id) {
-      window.location.href = `../pages/project.html?id=${reference_id}`;
+      window.location.href = `project-details.html?id=${reference_id}`;
     }
   });
 

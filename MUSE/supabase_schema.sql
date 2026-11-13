@@ -366,6 +366,13 @@ CREATE POLICY "Users can update/delete their own avatar" ON storage.objects FOR 
     auth.uid()::text = (storage.foldername(name))[1]
   );
 
+DROP POLICY IF EXISTS "Users can delete their own avatar" ON storage.objects;
+CREATE POLICY "Users can delete their own avatar" ON storage.objects FOR DELETE 
+  USING (
+    bucket_id = 'muse-avatars' AND 
+    auth.uid()::text = (storage.foldername(name))[1]
+  );
+
 -- Storage Policies for muse-projects
 DROP POLICY IF EXISTS "Project images are publicly readable" ON storage.objects;
 CREATE POLICY "Project images are publicly readable" ON storage.objects FOR SELECT 

@@ -90,3 +90,28 @@ FROM auth.users u
 LEFT JOIN public.profiles p ON p.id = u.id
 WHERE p.id IS NULL
 ON CONFLICT DO NOTHING;
+
+-- ============================================================
+-- 5) OPTIONAL — hide emails at the database level
+-- Run ONLY if you also change the app. The app reads profiles with
+-- select('*'), so simply revoking the email column makes every profile
+-- query fail. The safe path is to move emails into a private table and
+-- switch profile queries to explicit columns.
+--
+-- CREATE TABLE IF NOT EXISTS public.profile_emails (
+--   id UUID PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE,
+--   email TEXT
+-- );
+-- ALTER TABLE public.profile_emails ENABLE ROW LEVEL SECURITY;
+-- DROP POLICY IF EXISTS "Owners can view their email" ON public.profile_emails;
+-- CREATE POLICY "Owners can view their email" ON public.profile_emails
+--   FOR SELECT USING (auth.uid() = id);
+-- INSERT INTO public.profile_emails (id, email)
+--   SELECT id, email FROM public.profiles WHERE email IS NOT NULL
+--   ON CONFLICT (id) DO NOTHING;
+-- ALTER TABLE public.profiles DROP COLUMN IF EXISTS email;
+--
+-- After running, update handle_new_user() to insert into profile_emails
+-- instead of profiles, and change select('*') in js/profile.js to an
+-- explicit column list that excludes email.
+-- ============================================================

@@ -191,9 +191,16 @@
         // If file uploaded, store in Supabase Storage bucket muse-avatars
         if (selectedAvatarFile) {
           const { url, error: uploadErr } = await uploadAvatar(selectedAvatarFile, currentUser.id);
-          if (!uploadErr && url) {
-            avatar_url = url;
+          if (uploadErr || !url) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Profile Changes';
+            showToast(
+              uploadErr?.message || 'Avatar upload failed. Please try a different image and save again.',
+              'error'
+            );
+            return;
           }
+          avatar_url = url;
         }
 
         const { data, error } = await updateProfile({

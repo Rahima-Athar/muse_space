@@ -53,6 +53,17 @@ function _isValidUsername(value) {
   return /^[a-z0-9_]{3,30}$/.test(String(value || ''));
 }
 
+const ALLOWED_PROFILE_FIELDS = ['full_name', 'bio', 'skills', 'website', 'avatar_url'];
+
+function _pickProfileFields(data) {
+  const picked = {};
+  if (!data || typeof data !== 'object') return picked;
+  for (const key of ALLOWED_PROFILE_FIELDS) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) picked[key] = data[key];
+  }
+  return picked;
+}
+
 /**
  * Build a collision-resistant fallback username from the auth user.
  * @param {object} user
@@ -328,8 +339,8 @@ export async function resetPassword(email) {
       email.trim(),
       {
         // Redirect URL after the user clicks the reset link.
-        // Update this to your production domain.
-        redirectTo: `${window.location.origin}/pages/reset-password.html`,
+        // Resolve against the current page so it works from any sub-path.
+        redirectTo: new URL('reset-password.html', window.location.href).href,
       }
     );
 
@@ -457,10 +468,10 @@ export async function restoreSession(onRestored) {
  * Guard: redirect to the login page if the user is NOT authenticated.
  * Call at the top of any page that requires login.
  *
- * @param {string} [loginPath='../pages/login.html'] — Relative path to the login page
+ * @param {string} [loginPath='login.html'] — Relative path to the login page
  * @returns {Promise<object|null>} — `{ user }` if authenticated, or null (and redirect).
  */
-export async function requireAuth(loginPath = '../pages/login.html') {
+export async function requireAuth(loginPath = 'login.html') {
   const { data } = await getCurrentUser();
 
   if (!data.user) {
@@ -485,10 +496,10 @@ export async function requireAuth(loginPath = '../pages/login.html') {
  * Guard: redirect to the feed/home if the user IS already authenticated.
  * Useful on the login / signup pages.
  *
- * @param {string} [feedPath='../pages/feed.html'] — Relative path to the feed/home page
+ * @param {string} [feedPath='feed.html'] — Relative path to the feed/home page
  * @returns {Promise<void>}
  */
-export async function redirectIfAuthenticated(feedPath = '../pages/feed.html') {
+export async function redirectIfAuthenticated(feedPath = 'feed.html') {
   const { data } = await getCurrentUser();
 
   if (data.user) {
@@ -658,9 +669,14 @@ export async function ensureCurrentProfile() {
  */
 export async function updateCurrentProfile(updates) {
   try {
+    const safeUpdates = _pickProfileFields(updates);
+    if (Object.keys(safeUpdates).length === 0) {
+      return { data: null, error: { message: 'No valid profile fields to update.' } };
+    }
+
     if (!_isLive()) {
       if (!_readDemoSession()) return { data: null, error: { message: 'Not authenticated.' } };
-      return { data: saveDemoProfile(updates), error: null };
+      return { data: saveDemoProfile(safeUpdates), error: null };
     }
 
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -669,7 +685,7 @@ export async function updateCurrentProfile(updates) {
 
     const { data, error } = await supabase
       .from('profiles')
-      .update({ ...updates, updated_at: new Date().toISOString() })
+      .update({ ...safeUpdates, updated_at: new Date().toISOString() })
       .eq('id', user.id)
       .select()
       .single();

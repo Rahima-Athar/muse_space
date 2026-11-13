@@ -16,12 +16,12 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 /*  These run in the browser, so only use the PUBLIC anon key here.   */
 /* ------------------------------------------------------------------ */
 
-const DEFAULT_URL = 'https://secyvvgglpnunnzvruss.supabase.co';
-const DEFAULT_ANON_KEY = 'sb_publishable_NuduYJTJS2lGL0Rbk_KHqg_hd16BTIw';
+const NEXT_PUBLIC_SUPABASE_URL = 'https://secyvvgglpnunnzvruss.supabase.co';
+const NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_NuduYJTJS2lGL0Rbk_KHqg_hd16BTIw';
 
 /**
  * Get active Supabase configuration.
- * Reads saved credentials from localStorage first, or falls back to DEFAULT_URL / DEFAULT_ANON_KEY.
+ * Reads saved credentials from localStorage first, or falls back to NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.
  * @returns {{url: string, key: string, isConnected: boolean}}
  */
 export function getSupabaseConfig() {
@@ -31,21 +31,21 @@ export function getSupabaseConfig() {
   // If valid credentials are hard-coded, prefer them over any stale
   // localStorage values so the app always uses the configured project.
   const hasValidDefaults = !!(
-    DEFAULT_URL &&
-    DEFAULT_URL.startsWith('https://') &&
-    !DEFAULT_URL.includes('YOUR_PROJECT_ID') &&
-    DEFAULT_ANON_KEY &&
-    DEFAULT_ANON_KEY.length > 20 &&
-    !DEFAULT_ANON_KEY.includes('YOUR_SUPABASE_ANON_KEY')
+    NEXT_PUBLIC_SUPABASE_URL &&
+    NEXT_PUBLIC_SUPABASE_URL.startsWith('https://') &&
+    !NEXT_PUBLIC_SUPABASE_URL.includes('YOUR_PROJECT_ID') &&
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.length > 20 &&
+    !NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.includes('YOUR_SUPABASE_ANON_KEY')
   );
 
   const activeUrl = hasValidDefaults
-    ? DEFAULT_URL
-    : ((localUrl && localUrl.trim()) ? localUrl.trim() : DEFAULT_URL);
+    ? NEXT_PUBLIC_SUPABASE_URL
+    : ((localUrl && localUrl.trim()) ? localUrl.trim() : NEXT_PUBLIC_SUPABASE_URL);
 
   const activeKey = hasValidDefaults
-    ? DEFAULT_ANON_KEY
-    : ((localKey && localKey.trim()) ? localKey.trim() : DEFAULT_ANON_KEY);
+    ? NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+    : ((localKey && localKey.trim()) ? localKey.trim() : NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
 
   const isConnected = !!(
     activeUrl &&
