@@ -71,6 +71,7 @@ export async function renderNavbar(container) {
     }
 
     if (user) {
+      if (user.id) localStorage.setItem('MUSE_LAST_USER_ID', user.id);
       const profileResult = await ensureCurrentProfile();
       profileData = profileResult?.data || null;
     }

@@ -11,6 +11,32 @@ import { supabase, getSupabaseConfig } from './supabase.js';
 
 const DEMO_SESSION_KEY = 'MUSE_DEMO_SESSION';
 const DEMO_PROFILE_KEY = 'MUSE_DEMO_PROFILE';
+const ACTIVE_USER_KEY = 'MUSE_ACTIVE_USER';
+const LAST_USER_ID_KEY = 'MUSE_LAST_USER_ID';
+
+export function getActiveUser() {
+  try {
+    return JSON.parse(localStorage.getItem(ACTIVE_USER_KEY) || 'null');
+  } catch {
+    return null;
+  }
+}
+
+export function setActiveUser(user) {
+  if (!user) {
+    localStorage.removeItem(ACTIVE_USER_KEY);
+    localStorage.removeItem(LAST_USER_ID_KEY);
+    return;
+  }
+  try {
+    localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(user));
+    if (user.id) {
+      localStorage.setItem(LAST_USER_ID_KEY, user.id);
+    }
+  } catch {
+    /* storage full */
+  }
+}
 
 function _isLive() {
   return getSupabaseConfig().isConnected;
@@ -205,6 +231,29 @@ export async function signUp(email, password, fullName, username) {
 
     if (authError) throw authError;
 
+    // Immediately persist user locally so browser remembers account
+    if (authData?.user) {
+      setActiveUser(authData.user);
+    }
+
+    // If session was not immediately returned (e.g. email confirmation setting in Supabase),
+    // attempt auto sign-in with password so user gets a live session seamlessly
+    if (!authData.session && password) {
+      try {
+        const { data: signInData } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
+        if (signInData?.user) {
+          authData.user = signInData.user;
+          authData.session = signInData.session;
+          setActiveUser(signInData.user);
+        }
+      } catch {
+        // Ignored; active user is already stored locally
+      }
+    }
+
     // 3) Insert or update the profile row.
     // When email confirmation is enabled there is no session yet, so a
     // client-side insert is blocked by RLS — the DB trigger handles it instead.
@@ -229,7 +278,7 @@ export async function signUp(email, password, fullName, username) {
       }
     } else if (authData.user) {
       console.info(
-        '[auth] Email confirmation is required, so the profile row is created by the "on_auth_user_created" DB trigger. The chosen username is synced from auth metadata on first sign-in.'
+        '[auth] Account created. Profile is initialized via DB trigger and active session is cached.'
       );
     }
 
@@ -280,6 +329,10 @@ export async function signIn(email, password) {
 
     if (error) throw error;
 
+    if (data?.user) {
+      setActiveUser(data.user);
+    }
+
     // Heal accounts that have an auth user but no profile row yet
     // (e.g. registered before the DB trigger was installed).
     try {
@@ -309,8 +362,11 @@ export async function signIn(email, password) {
  */
 export async function signOut() {
   try {
+    setActiveUser(null);
+    localStorage.removeItem(DEMO_SESSION_KEY);
+    localStorage.removeItem(LAST_USER_ID_KEY);
+
     if (!_isLive()) {
-      localStorage.removeItem(DEMO_SESSION_KEY);
       return { error: null };
     }
 
@@ -364,30 +420,49 @@ export async function resetPassword(email) {
 export async function getCurrentUser() {
   try {
     if (!_isLive()) {
-      return { data: { user: _readDemoSession() }, error: null };
+      return { data: { user: _readDemoSession() || getActiveUser() }, error: null };
     }
 
     // Prefer the locally persisted session so the UI stays signed in even if
     // a transient network/auth refresh hiccup occurs.
     const { data: sessionData } = await supabase.auth.getSession();
     if (sessionData?.session?.user) {
+      setActiveUser(sessionData.session.user);
       // Best-effort server validation; never drop a valid local session on
       // transient failures (the auth client will refresh tokens as needed).
       try {
         const { data, error } = await supabase.auth.getUser();
-        if (!error && data?.user) return { data, error: null };
+        if (!error && data?.user) {
+          setActiveUser(data.user);
+          return { data, error: null };
+        }
       } catch (validationError) {
         console.debug('[auth] getUser validation skipped:', validationError.message);
       }
       return { data: { user: sessionData.session.user }, error: null };
     }
 
-    const { data, error } = await supabase.auth.getUser();
-    if (error) throw error;
-    return { data, error: null };
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (!error && data?.user) {
+        setActiveUser(data.user);
+        return { data, error: null };
+      }
+    } catch (err) {
+      // server check skipped
+    }
+
+    // Fallback to persisted active user so account remains signed in
+    const localUser = getActiveUser();
+    if (localUser) {
+      return { data: { user: localUser }, error: null };
+    }
+
+    return { data: { user: null }, error: null };
   } catch (error) {
     console.error('[auth] getCurrentUser:', error.message);
-    return { data: { user: null }, error };
+    const localUser = getActiveUser();
+    return { data: { user: localUser || null }, error: localUser ? null : error };
   }
 }
 
@@ -519,13 +594,13 @@ export async function redirectIfAuthenticated(feedPath = 'feed.html') {
 export async function getCurrentProfile() {
   try {
     if (!_isLive()) {
-      const user = _readDemoSession();
+      const user = _readDemoSession() || getActiveUser();
       if (!user) return { data: null, error: { message: 'Not authenticated.' } };
       return { data: readDemoProfile(), error: null };
     }
 
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError) throw userError;
+    const { data: userData } = await getCurrentUser();
+    const user = userData?.user;
     if (!user) return { data: null, error: { message: 'Not authenticated.' } };
 
     const { data, error } = await supabase

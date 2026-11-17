@@ -180,6 +180,10 @@
         const uid = data?.user?.id || data?.session?.user?.id;
         const needsConfirmation = !data?.session;
 
+        if (uid) {
+          localStorage.setItem('MUSE_LAST_USER_ID', uid);
+        }
+
         if (needsConfirmation) {
           authAlert.textContent = 'Account created! Check your email to confirm your account. Taking you to your profile...';
           authAlert.className = 'auth-alert auth-alert-success';

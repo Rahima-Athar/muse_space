@@ -18,3 +18,4 @@ drop policy if exists "Users can update/delete their project images" on storage.
 create policy "Users can update/delete their project images" on storage.objects for delete using (bucket_id = 'muse-projects' and auth.uid()::text = (storage.foldername(name))[1]);
 
 notify pgrst, 'reload schema';
+

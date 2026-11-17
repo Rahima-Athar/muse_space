@@ -172,10 +172,18 @@
       submitBtn.querySelector('.btn-text').textContent = 'Sign In';
 
       if (error) {
-        authAlert.textContent = error.message || 'Invalid email or password.';
+        if (error.message && error.message.toLowerCase().includes('email not confirmed')) {
+          authAlert.innerHTML = `<strong>Email not confirmed yet!</strong><br/>Please check your inbox to confirm your email, OR in Supabase Dashboard go to <strong>Authentication &rarr; Providers &rarr; Email</strong> and turn off <em>Confirm email</em>.`;
+        } else {
+          authAlert.textContent = error.message || 'Invalid email or password.';
+        }
         authAlert.className = 'auth-alert auth-alert-error';
         authAlert.style.display = 'block';
       } else {
+        const uid = data?.user?.id || data?.session?.user?.id;
+        if (uid) {
+          localStorage.setItem('MUSE_LAST_USER_ID', uid);
+        }
         showToast('Signed in successfully!', 'success');
         window.location.href = 'feed.html';
       }
